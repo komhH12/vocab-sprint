@@ -1,0 +1,659 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#f5f5f7" media="(prefers-color-scheme:light)">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme:dark)">
+<title>单词冲刺 · Unit 1–2</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0}
+:root{
+  --fg:#1d1d1f; --fg2:#6e6e73; --fg3:#8b8b90;
+  --bg:#f5f5f7; --card:rgba(255,255,255,.86); --card-solid:#fff;
+  --stroke:rgba(0,0,0,.07); --outline:rgba(0,0,0,.06);
+  --well:rgba(120,120,128,.11); --well2:rgba(120,120,128,.18);
+  --divider:rgba(60,60,67,.13);
+  --accent:#007aff; --accent-d:#0063d1;
+  --no:#d70015; --ok:#0e8a3e;
+  --nobg:rgba(255,59,48,.13);
+  --l4:#0071e3; --l4bg:rgba(0,122,255,.11);
+  --l6:#b35c00; --l6bg:rgba(255,149,0,.14);
+  --ac:#8e44c9; --acbg:rgba(175,82,222,.12);
+  --inset:rgba(255,255,255,.9);
+  --shadow:0 8px 28px rgba(0,0,0,.07),0 1px 3px rgba(0,0,0,.04);
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --fg:#f5f5f7; --fg2:rgba(235,235,245,.76); --fg3:rgba(235,235,245,.52);
+    --bg:#000; --card:rgba(28,28,30,.80); --card-solid:#1c1c1e;
+    --stroke:rgba(255,255,255,.09); --outline:rgba(255,255,255,.08);
+    --well:rgba(120,120,128,.22); --well2:rgba(120,120,128,.32);
+    --divider:rgba(240,240,245,.13);
+    --accent:#0a84ff; --accent-d:#409cff;
+    --no:#ff6961; --ok:#31d158;
+    --nobg:rgba(255,69,58,.18);
+    --l4:#6cb2ff; --l4bg:rgba(10,132,255,.17);
+    --l6:#ffb340; --l6bg:rgba(255,159,10,.17);
+    --ac:#d98cf7; --acbg:rgba(191,90,242,.16);
+    --inset:rgba(255,255,255,.07);
+    --shadow:0 10px 34px rgba(0,0,0,.5),0 1px 2px rgba(0,0,0,.4);
+  }
+}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","PingFang SC","Hiragino Sans GB",sans-serif;
+  background:var(--bg); color:var(--fg); overflow:hidden;
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+  overscroll-behavior:none; touch-action:manipulation;
+  transition:background .3s;
+}
+body::before{
+  content:''; position:fixed; inset:-25%; z-index:0; pointer-events:none;
+  background:
+    radial-gradient(38% 32% at 18% 8%, rgba(0,122,255,.13), transparent 70%),
+    radial-gradient(34% 28% at 88% 88%, rgba(255,59,48,.09), transparent 70%),
+    radial-gradient(30% 26% at 70% 20%, rgba(175,82,222,.08), transparent 70%);
+  filter:blur(36px);
+}
+@media (prefers-color-scheme:dark){ body::before{opacity:.55} }
+
+.app{position:relative;z-index:1;height:100dvh;max-width:620px;margin:0 auto;display:flex;flex-direction:column;padding:0 18px;padding-top:max(14px,env(safe-area-inset-top));padding-bottom:max(22px,env(safe-area-inset-bottom))}
+.view{display:flex;flex-direction:column;flex:1;min-height:0;animation:fadeIn .2s ease}
+.view[hidden]{display:none!important}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* ===== 首页 ===== */
+.hd{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:6px 2px 0}
+.hd h1{margin:0;font-size:26px;font-weight:700;letter-spacing:-.02em}
+.hd .sub{margin:4px 0 0;font-size:12.5px;color:var(--fg2)}
+.icon{width:38px;height:38px;border:none;background:var(--well);color:var(--fg2);border-radius:50%;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex:none;transition:background .15s}
+.icon:hover{background:var(--well2)}
+
+.hero{display:flex;align-items:center;gap:20px;margin:22px 0 18px;padding:18px 20px;border-radius:20px;background:var(--card);border:.5px solid var(--stroke);box-shadow:var(--shadow);backdrop-filter:blur(20px)}
+.ring{position:relative;width:88px;height:88px;flex:none}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:7;stroke-linecap:round}
+.ring .bgc{stroke:var(--well2)}
+.ring .fgc{stroke:var(--accent);transition:stroke-dashoffset .5s cubic-bezier(.3,.8,.3,1)}
+.ring .num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:700;letter-spacing:-.02em}
+.hero-txt{min-width:0}
+.hero-txt .big{font-size:17px;font-weight:650;letter-spacing:-.01em}
+.hero-txt .sm{font-size:12.5px;color:var(--fg2);margin-top:5px;line-height:1.5}
+.hero-txt .sm b{color:var(--fg);font-weight:600}
+
+.cta{display:flex;flex-direction:column;gap:9px;margin-bottom:20px}
+.btn{border:none;font-family:inherit;font-weight:600;cursor:pointer;border-radius:14px;transition:transform .08s,filter .15s,background .15s;display:flex;align-items:center;justify-content:center;gap:7px}
+.btn:active{transform:scale(.985)}
+.btn-primary{height:56px;background:var(--accent);color:#fff;font-size:17px;letter-spacing:.01em;box-shadow:0 4px 16px rgba(0,122,255,.28)}
+.btn-primary:hover{filter:brightness(1.06)}
+.btn-primary:disabled{background:var(--well2);color:var(--fg3);box-shadow:none;cursor:default}
+.btn-ghost{height:46px;background:var(--well);color:var(--fg);font-size:14.5px}
+.btn-ghost:hover{background:var(--well2)}
+.btn-ghost:disabled{color:var(--fg3);cursor:default}
+.btn .n{font-weight:500;opacity:.75;font-size:14px}
+
+.sec{display:flex;align-items:baseline;justify-content:space-between;margin:0 2px 9px}
+.sec h2{margin:0;font-size:13px;font-weight:650;color:var(--fg2);letter-spacing:.02em}
+.sec span{font-size:11.5px;color:var(--fg3)}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;overflow-y:auto;padding-bottom:6px}
+.cell{position:relative;border:.5px solid var(--stroke);background:var(--card);border-radius:13px;padding:10px 8px 9px;cursor:pointer;text-align:center;transition:transform .1s,background .15s;overflow:hidden}
+.cell:hover{background:var(--card-solid)}
+.cell:active{transform:scale(.97)}
+.cell .cn{font-size:13.5px;font-weight:650;letter-spacing:-.01em;white-space:nowrap}
+.cell .cn .sep{color:var(--fg3);margin:0 1px;font-weight:500}
+.cell .pg{font-size:10.5px;color:var(--fg3);margin-top:3px;font-variant-numeric:tabular-nums}
+.cell .bar{position:absolute;left:0;bottom:0;height:2.5px;background:var(--accent);opacity:.75;transition:width .3s}
+.cell.done{background:var(--l4bg);border-color:transparent}
+.cell.done .pg{color:var(--l4)}
+
+.foot-tip{margin-top:auto;padding:14px 2px 2px;font-size:11px;color:var(--fg3);display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+@media (pointer:coarse){ .foot-tip{display:none} }
+.kbd{display:inline-block;min-width:17px;padding:1px 5px;border-radius:5px;background:var(--well);color:var(--fg2);font-size:10px;font-weight:600;text-align:center;margin-right:3px}
+
+/* ===== 学习页 ===== */
+.study-bar{display:flex;align-items:center;gap:12px;padding:2px 2px 0}
+.study-bar .close{width:30px;height:30px;border-radius:50%;background:var(--well);border:none;color:var(--fg2);font-size:15px;cursor:pointer;flex:none;display:flex;align-items:center;justify-content:center}
+.study-bar .close:hover{background:var(--well2)}
+.pbar{flex:1;height:5px;border-radius:99px;background:var(--well2);overflow:hidden}
+.pbar>i{display:block;height:100%;width:0;min-width:0;background:var(--accent);border-radius:99px;transition:width .25s ease}
+.pbar>i.on{min-width:5px}
+.study-bar .cnt{font-size:12.5px;color:var(--fg2);font-variant-numeric:tabular-nums;flex:none;letter-spacing:.01em}
+.study-bar .cnt b{color:var(--fg);font-weight:650}
+
+.card{flex:1;min-height:0;margin:16px 0 14px;border-radius:22px;background:var(--card);border:.5px solid var(--stroke);box-shadow:var(--shadow),inset 0 .5px 0 var(--inset);backdrop-filter:blur(24px);padding:26px 24px;display:flex;cursor:pointer;position:relative;overflow:hidden}
+.face{width:100%;display:flex;flex-direction:column;animation:fadeUp .18s ease both;min-height:0}
+.face.front{align-items:center;justify-content:center;text-align:center;gap:0}
+.face.back{overflow-y:auto;padding-right:2px}
+.face[hidden]{display:none!important}
+
+.chip{position:absolute;top:16px;right:18px;padding:3px 9px;border-radius:999px;font-size:11px;font-weight:600;letter-spacing:.02em}
+.chip.l4{background:var(--l4bg);color:var(--l4)}
+.chip.l6{background:var(--l6bg);color:var(--l6)}
+.chip.ac{background:var(--acbg);color:var(--ac)}
+
+.word{font-size:clamp(2.3rem,9.2vw,3.55rem);font-weight:640;letter-spacing:-.035em;line-height:1.06;overflow-wrap:anywhere;max-width:100%;color:var(--fg)}
+.ipa{margin-top:13px;font-size:clamp(.9rem,3.4vw,1.05rem);color:var(--fg2);letter-spacing:.01em;font-weight:400}
+.tap-hint{position:absolute;left:0;right:0;bottom:18px;text-align:center;font-size:13px;color:var(--fg2);font-weight:450;animation:breathe 2.8s ease-in-out infinite}
+@keyframes breathe{0%,100%{opacity:.78}50%{opacity:1}}
+
+.bw{font-size:clamp(1.6rem,5.6vw,2.05rem);font-weight:650;letter-spacing:-.02em;line-height:1.15;overflow-wrap:anywhere;padding-right:44px}
+.bp{font-size:12.5px;color:var(--fg2);margin-top:7px}
+.spk{position:absolute;top:14px;right:16px;width:30px;height:30px;border-radius:50%;border:none;background:var(--well);color:var(--fg2);cursor:pointer;display:flex;align-items:center;justify-content:center}
+.spk:hover{background:var(--well2)}
+.spk svg{width:14px;height:14px}
+.rule{height:.5px;background:var(--divider);margin:16px 0}
+.zrow{display:flex;gap:11px;align-items:flex-start}
+.pos{font-size:12px;font-weight:600;color:var(--fg3);font-style:italic;padding-top:.42em;flex:none;min-width:30px}
+.z{font-size:clamp(1.32rem,4.7vw,1.62rem);font-weight:600;letter-spacing:-.01em;line-height:1.32;color:var(--fg)}
+.e{margin-top:12px;font-size:13.5px;line-height:1.6;color:var(--fg2)}
+.ex{margin-top:16px;font-size:13px;line-height:1.62;color:var(--fg2);border-left:2.5px solid var(--divider);padding-left:12px}
+.ex .en{color:var(--fg);opacity:.92}
+.ex .zh{color:var(--fg2);opacity:.85;font-size:12.5px;margin-top:3px}
+.badge-ok,.badge-no{position:absolute;inset:0;pointer-events:none;border-radius:22px;animation:flash .35s ease-out both}
+.badge-ok{box-shadow:inset 0 0 0 2.5px var(--ok)}
+.badge-no{box-shadow:inset 0 0 0 2.5px var(--no)}
+@keyframes flash{0%{opacity:.9}100%{opacity:0}}
+
+.acts{display:flex;gap:10px;flex:none}
+.acts .btn{flex:1;height:56px;font-size:16.5px}
+.btn-no{background:var(--nobg,rgba(255,59,48,.11));color:var(--no);box-shadow:inset 0 0 0 1.5px rgba(215,0,21,.30)}
+.btn-no:hover{background:rgba(255,59,48,.18)}
+.btn-yes{background:var(--accent);color:#fff;box-shadow:0 4px 14px rgba(0,122,255,.24)}
+.btn-yes:hover{filter:brightness(1.06)}
+.btn-next{background:var(--accent);color:#fff}
+
+/* ===== 结算页 ===== */
+.done-hd{text-align:center;padding:26px 0 6px}
+.big-ring{width:104px;height:104px;margin:0 auto 16px;position:relative}
+.big-ring .num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:700;letter-spacing:-.03em}
+.done-hd h2{margin:0;font-size:21px;font-weight:700;letter-spacing:-.02em}
+.done-hd p{margin:7px 0 0;font-size:13px;color:var(--fg2)}
+.done-hd p b{color:var(--fg);font-weight:650}
+.weak{border:.5px solid var(--stroke);background:var(--card);border-radius:16px;margin:18px 0 14px;overflow:hidden;display:flex;flex-direction:column;min-height:0;flex:1}
+.weak-hd{padding:11px 14px 9px;font-size:12px;font-weight:650;color:var(--fg2);border-bottom:.5px solid var(--divider);display:flex;justify-content:space-between;align-items:center}
+.weak-list{overflow-y:auto;flex:1;min-height:0}
+.wi{display:flex;align-items:baseline;gap:10px;padding:11px 14px;border-bottom:.5px solid var(--divider);cursor:pointer}
+.wi:last-child{border-bottom:none}
+.wi:hover{background:var(--well)}
+.wi .ww{font-size:15px;font-weight:600;letter-spacing:-.01em;flex:none}
+.wi .wz{font-size:12.5px;color:var(--fg2);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.weak-empty{padding:30px 14px;text-align:center;font-size:13px;color:var(--fg2)}
+
+/* 设置面板 */
+.mask{position:fixed;inset:0;background:rgba(0,0,0,.28);z-index:20;display:flex;align-items:flex-end;justify-content:center;animation:fadeIn .16s}
+.mask[hidden]{display:none!important}
+.sheet{width:100%;max-width:620px;background:var(--card-solid);border-radius:20px 20px 0 0;padding:8px 18px max(22px,env(safe-area-inset-bottom));animation:slideUp .22s cubic-bezier(.3,.9,.3,1);box-shadow:0 -8px 30px rgba(0,0,0,.14)}
+@keyframes slideUp{from{transform:translateY(30px);opacity:.6}to{transform:none;opacity:1}}
+.sheet .grab{width:36px;height:5px;border-radius:99px;background:var(--well2);margin:6px auto 14px}
+.sheet h3{margin:0 0 14px;font-size:16px;font-weight:650;letter-spacing:-.01em}
+.opt{display:flex;align-items:center;justify-content:space-between;padding:13px 2px;border-bottom:.5px solid var(--divider)}
+.opt:last-of-type{border-bottom:none}
+.opt .lbl{font-size:14.5px}
+.opt .lbl small{display:block;font-size:11.5px;color:var(--fg3);margin-top:3px}
+.sw{width:48px;height:29px;border-radius:99px;background:var(--well2);border:none;position:relative;cursor:pointer;transition:background .2s;flex:none}
+.sw::after{content:'';position:absolute;top:2px;left:2px;width:25px;height:25px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.22);transition:transform .2s cubic-bezier(.3,.9,.3,1)}
+.sw.on{background:#34c759}
+.sw.on::after{transform:translateX(19px)}
+.sheet .danger{margin-top:16px;width:100%;height:44px;border-radius:12px;border:none;background:rgba(255,59,48,.1);color:#ff3b30;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit}
+.sheet .ver{text-align:center;font-size:10.5px;color:var(--fg3);margin-top:14px}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ================= 首页 ================= -->
+  <section class="view" id="vHome">
+    <div class="hd">
+      <div>
+        <h1>单词冲刺</h1>
+        <p class="sub" id="homeSub">读写教程 · Unit 1–2</p>
+      </div>
+      <button class="icon" id="btnGear" title="设置" aria-label="设置">⚙</button>
+    </div>
+
+    <div class="hero">
+      <div class="ring">
+        <svg viewBox="0 0 100 100">
+          <circle class="bgc" cx="50" cy="50" r="43"></circle>
+          <circle class="fgc" id="ringFg" cx="50" cy="50" r="43" stroke-dasharray="270.2" stroke-dashoffset="270.2"></circle>
+        </svg>
+        <div class="num" id="ringNum">0%</div>
+      </div>
+      <div class="hero-txt">
+        <div class="big" id="heroBig">还没开始</div>
+        <div class="sm" id="heroSm"></div>
+      </div>
+    </div>
+
+    <div class="cta">
+      <button class="btn btn-primary" id="btnAll"></button>
+      <button class="btn btn-ghost" id="btnWeak"></button>
+    </div>
+
+    <div class="sec">
+      <h2>按课文刷</h2>
+      <span id="chapHint">12 篇 · 每篇 14–27 词</span>
+    </div>
+    <div class="grid" id="grid"></div>
+
+    <div class="foot-tip">
+      <span><span class="kbd">←</span>不认识</span>
+      <span><span class="kbd">→</span>认识</span>
+      <span><span class="kbd">空格</span>翻面</span>
+    </div>
+  </section>
+
+  <!-- ================= 学习页 ================= -->
+  <section class="view" id="vStudy" hidden>
+    <div class="study-bar">
+      <button class="close" id="btnQuit" aria-label="退出">✕</button>
+      <div class="pbar"><i id="pbar"></i></div>
+      <div class="cnt" id="cnt"></div>
+    </div>
+
+    <div class="card" id="card">
+      <div class="face front" id="faceFront">
+        <span class="chip" id="fChip"></span>
+        <div class="word" id="fWord"></div>
+        <div class="ipa" id="fIpa"></div>
+        <div class="tap-hint" id="tapHint">轻点卡片 · 看释义</div>
+      </div>
+      <div class="face back" id="faceBack" hidden>
+        <button class="spk" id="btnSpk" aria-label="朗读">
+          <svg viewBox="0 0 16 16" fill="none"><path d="M8.6 3.1v9.8L5.2 9.9H3a.9.9 0 0 1-.9-.9V7a.9.9 0 0 1 .9-.9h2.2L8.6 3.1z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M11.2 6a3.2 3.2 0 0 1 0 4M13 4.4a5.4 5.4 0 0 1 0 7.2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        </button>
+        <div class="bw" id="bWord"></div>
+        <div class="bp" id="bIpa"></div>
+        <div class="rule"></div>
+        <div class="zrow">
+          <span class="pos" id="bPos"></span>
+          <div class="z" id="bZh"></div>
+        </div>
+        <div class="rule"></div>
+        <div class="e" id="bEn"></div>
+        <div class="ex" hidden id="bEx">
+          <div class="en" id="bExEn"></div>
+          <div class="zh" id="bExZh"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="acts">
+      <button class="btn btn-no" id="btnNo">不认识</button>
+      <button class="btn btn-yes" id="btnYes">认识</button>
+    </div>
+  </section>
+
+  <!-- ================= 结算页 ================= -->
+  <section class="view" id="vDone" hidden>
+    <div class="done-hd">
+      <div class="big-ring">
+        <svg viewBox="0 0 100 100">
+          <circle class="bgc" cx="50" cy="50" r="43"></circle>
+          <circle class="fgc" id="doneRing" cx="50" cy="50" r="43" stroke-dasharray="270.2" stroke-dashoffset="270.2"></circle>
+        </svg>
+        <div class="num" id="donePct">0%</div>
+      </div>
+      <h2 id="doneTitle">这一轮刷完了</h2>
+      <p id="doneSub"></p>
+    </div>
+    <div class="weak">
+      <div class="weak-hd"><span id="weakTitle">还要再看一眼</span><span id="weakCount"></span></div>
+      <div class="weak-list" id="weakList"></div>
+    </div>
+    <div class="cta" style="margin-bottom:0">
+      <button class="btn btn-primary" id="btnAgain"></button>
+      <button class="btn btn-ghost" id="btnHome">回首页</button>
+    </div>
+  </section>
+
+</div>
+
+<!-- 设置 -->
+<div class="mask" id="mask" hidden>
+  <div class="sheet">
+    <div class="grab"></div>
+    <h3>设置</h3>
+    <div class="opt">
+      <div class="lbl">每轮洗牌<small>关掉则按课文原顺序</small></div>
+      <button class="sw" id="swShuffle" aria-label="洗牌"></button>
+    </div>
+    <div class="opt">
+      <div class="lbl">跳过四级词<small id="l4sub">119 个，多半已经认识</small></div>
+      <button class="sw" id="swSkipL4" aria-label="跳过四级"></button>
+    </div>
+    <div class="opt">
+      <div class="lbl">自动朗读<small>卡片出现时读一遍</small></div>
+      <button class="sw" id="swSpeak" aria-label="自动朗读"></button>
+    </div>
+    <button class="danger" id="btnReset">清空全部进度</button>
+    <div class="ver">Unit 1–2 · 243 词 · 12 篇课文</div>
+  </div>
+</div>
+
+<script>
+const DATA=[{"w":"institution","p":"ˌɪnstɪˈtju:ʃn","t":"学术","c":"Ch1 R1","u":"Unit 1","o":"n","e":"long-established custom, practice or group","z":"由来已久的风俗、习惯","x":"Marriage is a sacred institution.","y":"婚姻制度是神圣的。","id":"institution|Ch1 R1"},{"w":"union","p":"ˈju:niən","t":"四级","c":"Ch1 R1","u":"Unit 1","o":"n","e":"(act or instance of) uniting or being united","z":"结合，联合，合并","x":"They support the union between our two parties.","y":"他们赞成我们两党的联合。","id":"union|Ch1 R1"},{"w":"arranged marriage","p":"","t":"四级","c":"Ch1 R1","u":"Unit 1","o":"phr.","e":"a type of marital union where the bride and groom are selected by their families","z":"包办婚姻","x":"Jeya feels that her ambitious nature made her unsuitable for an arranged marriage.","y":"耶娅觉得她不安分的个性不适合包办婚姻。","id":"arranged marriage|Ch1 R1"},{"w":"variation","p":"ˌveriˈeɪʃn","t":"学术","c":"Ch1 R1","u":"Unit 1","o":"n","e":"a change, especially in the amount or level of sth.","z":"（数量、水平等的）变化，变更，变异","x":"The regulation allows of no variation.","y":"这规矩变不得。","id":"variation|Ch1 R1"},{"w":"median age","p":"","t":"六级","c":"Ch1 R1","u":"Unit 1","o":"phr.","e":"the age exactly in the middle of a range of ages","z":"年龄中位数","x":"The researchers surveyed a group of women between ages 40 and 100, with a median age of 67.","y":"研究人员调查了年龄在40岁至100岁之间的一组女性，她们的年龄中位数为67岁。","id":"median age|Ch1 R1"},{"w":"trend","p":"trend","t":"四级","c":"Ch1 R1","u":"Unit 1","o":"n","e":"a general direction in which a situation is changing or developing","z":"趋势，倾向，动态","x":"There is a growing trend towards earlier retirement.","y":"提早退休者有增加的趋势。","id":"trend|Ch1 R1"},{"w":"indicate","p":"ˈɪndɪkeɪt","t":"四级","c":"Ch1 R1","u":"Unit 1","o":"v","e":"to show that sth. is true or exists","z":"表明，显示","x":"Research indicates that eating habits are changing fast.","y":"研究显示，饮食习惯正迅速改变。","id":"indicate|Ch1 R1"},{"w":"majority","p":"məˈdʒɔ:rəti","t":"四级","c":"Ch1 R1","u":"Unit 1","o":"n","e":"the largest part of a group of people or things","z":"大部分，大多数","x":"The majority was/were in favour of banning smoking.","y":"大多数人支持禁烟。","id":"majority|Ch1 R1"},{"w":"postpone","p":"pəˈspəʊn","t":"四级","c":"Ch1 R1","u":"Unit 1","o":"v","e":"to arrange for an event, etc. to take place at a later time or date","z":"延迟，延期","x":"The game has already been postponed three times.","y":"这场比赛已经三度延期了。","id":"postpone|Ch1 R1"},{"w":"sociological","p":"ˌsəʊsɪəˈlɒdʒɪkl","t":"四级","c":"Ch1 R1","u":"Unit 1","o":"adj","e":"of or relating to or determined by sociology","z":"与社会学相关的","x":"Psychological and sociological studies were emphasizing the importance of the family.","y":"心理学和社会学研究都在强调家庭的重要性。","id":"sociological|Ch1 R1"},{"w":"decline","p":"dɪˈklaɪn","t":"六级","c":"Ch1 R1","u":"Unit 1","o":"v","e":"to become smaller, fewer, weaker, etc.","z":"减少，下降；衰弱，衰退","x":"Her health was declining rapidly.","y":"她的健康状况迅速恶化。","id":"decline|Ch1 R1"},{"w":"ashamed","p":"əˈʃeɪmd","t":"四级","c":"Ch1 R1","u":"Unit 1","o":"adj","e":"feeling shame or embarrassment about sb./sth. or because of sth. you have done","z":"惭愧，羞愧，尴尬","x":"She was deeply ashamed of her behaviour at the party.","y":"她对自己在聚会上的行为深感羞愧。","id":"ashamed|Ch1 R1"},{"w":"economic security","p":"","t":"六级","c":"Ch1 R1","u":"Unit 1","o":"phr.","e":"the condition of having stable income or other resources to support a standard of living now and in the foreseeable future","z":"经济保障","x":"Traditional ways of life provided economic security and spiritual fulfilment.","y":"传统的生活方式提供了经济保障，满足了精神需求。","id":"economic security|Ch1 R1"},{"w":"spouse","p":"spaʊs","t":"六级","c":"Ch1 R1","u":"Unit 1","o":"n","e":"a husband or wife","z":"配偶","x":"What is the best way to keep your spouse happy in the marriage?","y":"婚姻中让配偶幸福的最好方法是什么？","id":"spouse|Ch1 R1"},{"w":"significantly","p":"sɪgˈnɪfɪkəntli","t":"六级","c":"Ch1 R1","u":"Unit 1","o":"adv","e":"in a way that is large or important enough to have an effect on sth. or to be noticed","z":"显著地，明显地；有重大意义地","x":"The two sets of figures are not significantly different.","y":"这两组数字没有明显差别。","id":"significantly|Ch1 R1"},{"w":"still","p":"stɪl","t":"四级","c":"Ch1 R1","u":"Unit 1","o":"adv","e":"used for making a comparison stronger","z":"（用于加强比较级）还要，更","x":"The next day was warmer still.","y":"第二天更暖和了。","id":"still|Ch1 R1"},{"w":"considerable","p":"kənˈsɪdərəbl","t":"四级","c":"Ch1 R1","u":"Unit 1","o":"adj","e":"(formal) great in amount, size, importance, etc.","z":"相当多（或大、重要等）的","x":"The project wasted a considerable amount of time and money.","y":"那项工程耗费了相当多的时间和资金。","id":"considerable|Ch1 R1"},{"w":"eventually","p":"ɪˈventʃuəli","t":"四级","c":"Ch1 R1","u":"Unit 1","o":"adv","e":"at the end of a period of time or a series of events","z":"最后，终于","x":"Our flight eventually left five hours late.","y":"我们的班机最终晚了五个小时起飞。","id":"eventually|Ch1 R1"},{"w":"relatively","p":"ˈrelətɪvli","t":"四级","c":"Ch1 R1","u":"Unit 1","o":"adv","e":"to a fairly large degree, especially in comparison to sth. else","z":"相当程度上；相对地","x":"I found the test relatively easy.","y":"我觉得这次测试比较容易。","id":"relatively|Ch1 R1"},{"w":"widespread","p":"ˈwaɪdspred","t":"四级","c":"Ch1 R1","u":"Unit 1","o":"adj","e":"existing or happening over a large area or among many people","z":"分布广的；普遍的，广泛的","x":"The plan received widespread support throughout the country.","y":"这项计划得到了全国的普遍支持。","id":"widespread|Ch1 R1"},{"w":"expert","p":"ˈekspɜ:t","t":"学术","c":"Ch1 R1","u":"Unit 1","o":"n","e":"a person with special knowledge, skill or training","z":"专家，行家，能手","x":"She is an expert in child psychology.","y":"她是儿童心理学方面的专家。","id":"expert|Ch1 R1"},{"w":"primary","p":"ˈpraɪməri","t":"四级","c":"Ch1 R1","u":"Unit 1","o":"adj","e":"main; most important; basic","z":"主要的；最重要的；基本的","x":"Our primary concern must be the children.","y":"我们首先要关心的必须是儿童。","id":"primary|Ch1 R1"},{"w":"customize","p":"ˈkʌstəmaɪz","t":"六级","c":"Ch1 R1","u":"Unit 1","o":"v","e":"to make or change sth. to suit the needs of the owner","z":"订制，订做，改制（以满足顾主的需要）","x":"You can customize the software in several ways.","y":"你可用几种方法按需编制这个软件。","id":"customize|Ch1 R1"},{"w":"community","p":"kəˈmju:nəti","t":"学术","c":"Ch1 R1","u":"Unit 1","o":"n","e":"all the people who live in a particular area, country, etc. when talked about as a group","z":"社区；社会","x":"The local community was shocked by the murders.","y":"当地社会对这些谋杀案感到震惊。","id":"community|Ch1 R1"},{"w":"immigrate","p":"ˈɪmɪgreɪt","t":"学术","c":"Ch1 R1","u":"Unit 1","o":"v","e":"to come and live permanently in a country after leaving your own country","z":"（从外地）移居，移民","x":"He decided to immigrate to Australia to find work.","y":"他决定移居到澳大利亚找个工作。","id":"immigrate|Ch1 R1"},{"w":"minority","p":"maɪˈnɒrəti","t":"四级","c":"Ch1 R1","u":"Unit 1","o":"n","e":"a small group within a community or country that is different because of race, religion, language, etc.","z":"少数派，少数民族，少数群体","x":"A final settlement must respect minority rights.","y":"最终的解决方案必须尊重少数群体的权利。","id":"minority|Ch1 R1"},{"w":"adapt","p":"əˈdæpt","t":"四级","c":"Ch1 R1","u":"Unit 1","o":"v","e":"to change sth. in order to make it suitable for a new use or situation","z":"使适应，使适合（新用途、新情况）","x":"These styles can be adapted to suit individual tastes.","y":"这些式样可以修改，以适应个性化的偏好。","id":"adapt|Ch1 R1"},{"w":"image","p":"ˈɪmɪdʒ","t":"学术","c":"Ch1 R2","u":"Unit 1","o":"n","e":"a mental picture that you have of what sb./sth. is like or looks like","z":"（心目中的）形象，印象","x":"I had a mental image of what she would look like.","y":"我想象出她的大致模样。","id":"image|Ch1 R2"},{"w":"suburb","p":"ˈsʌbɜ:b","t":"四级","c":"Ch1 R2","u":"Unit 1","o":"n","e":"an area where people live that is outside the centre of a city","z":"郊区；城外","x":"They live in the suburbs.","y":"他们住在郊外。","id":"suburb|Ch1 R2"},{"w":"household","p":"ˈhaʊshəʊld","t":"四级","c":"Ch1 R2","u":"Unit 1","o":"n","e":"all the people living together in a house","z":"一家人；家庭","x":"Most households now own at least one car.","y":"现在大多数家庭至少有一辆汽车。","id":"household|Ch1 R2"},{"w":"income","p":"ˈɪnkʌm","t":"学术","c":"Ch1 R2","u":"Unit 1","o":"n","e":"the money that a person, a region, a country, etc. earns from work, investment, business, etc.","z":"收入，收益","x":"Tourism is a major source of income for the area.","y":"旅游业是这个地区的主要收入来源。","id":"income|Ch1 R2"},{"w":"stress","p":"stres","t":"四级","c":"Ch1 R2","u":"Unit 1","o":"n","e":"pressure or worry caused by the problems in life","z":"紧张；精神压力，心理负担","x":"Things can easily go wrong when people are under stress.","y":"人在压力之下，办事情就容易出差错。","id":"stress|Ch1 R2"},{"w":"challenge","p":"ˈtʃæləndʒ","t":"学术","c":"Ch1 R2","u":"Unit 1","o":"n","e":"a new or difficult task that tests sb.’s ability and skill","z":"挑战；艰巨任务","x":"Destruction of the environment is one of the most serious challenges we face.","y":"环境的破坏是我们所面临的最严峻的挑战之一。","id":"challenge|Ch1 R2"},{"w":"consequence","p":"ˈkɒnsɪkwəns","t":"四级","c":"Ch1 R2","u":"Unit 1","o":"n","e":"a result of sth. that has happened","z":"结果，后果","x":"This decision could have serious consequences for the industry.","y":"这项决定可能对该行业造成严重的后果。","id":"consequence|Ch1 R2"},{"w":"affect","p":"əˈfekt","t":"学术","c":"Ch1 R2","u":"Unit 1","o":"v","e":"to produce a change in sb./sth.","z":"影响","x":"Your opinion will not affect my decision.","y":"你的意见不会影响我的决定。","id":"affect|Ch1 R2"},{"w":"blended family","p":"","t":"六级","c":"Ch1 R2","u":"Unit 1","o":"phr.","e":"a family that consists of two people and their children from their own relationship and from previous ones","z":"混合家庭（成员包括夫妇、其子女以及先前与他人所生的子女）","x":"Blended families or stepfamilies are more common than ever.","y":"继亲家庭或重组家庭变得比以往更常见。","id":"blended family|Ch1 R2"},{"w":"custody","p":"ˈkʌstədi","t":"六级","c":"Ch1 R2","u":"Unit 1","o":"n","e":"the legal right to keep and look after a child, especially the right given to a child’s mother or father when they get divorced","z":"（尤指父母离异后孩子的）监护权","x":"Child custody is normally granted to the mother.","y":"孩子的监护权通常判给母亲。","id":"custody|Ch1 R2"},{"w":"guardianship","p":"ˈgɑ:diənʃɪp","t":"六级","c":"Ch1 R2","u":"Unit 1","o":"n","e":"(law) the state or position of being responsible for sb./sth.","z":"（法律）监护；监护地位；监护人的身份","x":"You want Marion to set aside her legal guardianship and give you Honoria?","y":"你要马丽恩放弃她的法定监护人资格，把霍诺丽娅交给你？","id":"guardianship|Ch1 R2"},{"w":"biological child","p":"","t":"四级","c":"Ch1 R2","u":"Unit 1","o":"phr.","e":"a child you caused to be born, rather than a child you adopt","z":"亲生子女","x":"In many ways, parenting an adopted child is not at all different from parenting a biological child.","y":"管教领养子女的方式同管教亲生子女并没有太大区别。","id":"biological child|Ch1 R2"},{"w":"resent","p":"rɪˈzent","t":"六级","c":"Ch1 R2","u":"Unit 1","o":"v","e":"to feel bitter or angry about sth., especially because you feel it is unfair","z":"愤恨；气愤","x":"She resents her mother for being so tough on her.","y":"她怨恨母亲对她太严厉。","id":"resent|Ch1 R2"},{"w":"conflict","p":"ˈkɒnflɪkt","t":"学术","c":"Ch1 R2","u":"Unit 1","o":"n","e":"a situation in which people, groups or countries are involved in a serious disagreement or argument","z":"冲突；争执","x":"She found herself in conflict with her parents over her future career.","y":"她发现自己在将来择业的问题上与父母存在分歧。","id":"conflict|Ch1 R2"},{"w":"argument","p":"ˈɑ:gjumənt","t":"四级","c":"Ch1 R2","u":"Unit 1","o":"n","e":"a conversation or discussion in which two or more people disagree, often angrily","z":"争论；争吵","x":"She got into an argument with the teacher.","y":"她和老师争论了起来。","id":"argument|Ch1 R2"},{"w":"shift","p":"ʃɪft","t":"四级","c":"Ch1 R2","u":"Unit 1","o":"n","e":"a change in position or direction","z":"改变，转换","x":"There has been a shift from smokestack industries into high-tech ones.","y":"产业结构已由烟囱工业转向了高科技产业。","id":"shift|Ch1 R2"},{"w":"boomerang","p":"ˈbu:məræŋ","t":"六级","c":"Ch1 R2","u":"Unit 1","o":"n","e":"a curved flat piece of wood that you throw and that can fly in a circle and come back to you","z":"回力镖，飞去来器","x":"Boomerang children are a growing social problem in some US communities.","y":"啃老族现象在美国有些地方逐渐成为了社会问题。","id":"boomerang|Ch1 R2"},{"w":"socialization","p":"ˌsəʊʃəlaɪˈzeɪʃn","t":"学术","c":"Ch1 R3","u":"Unit 1","o":"n","e":"the process of learning what to expect and how to behave in the society in which an individual lives","z":"社会化","x":"Female socialization emphasizes getting along with others.","y":"女性的社会化强调与他人相处。","id":"socialization|Ch1 R3"},{"w":"appropriately","p":"əˈprəʊprɪətlɪ","t":"学术","c":"Ch1 R3","u":"Unit 1","o":"adv","e":"in an appropriate manner","z":"适当地","x":"The government has been accused of not responding appropriately to the needs of the homeless.","y":"政府未采取恰当的措施回应无家可归者的需要，为此已受到谴责。","id":"appropriately|Ch1 R3"},{"w":"task","p":"tɑ:sk","t":"学术","c":"Ch1 R3","u":"Unit 1","o":"n","e":"a piece of work that sb. has to do, especially a hard or unpleasant one","z":"（尤指艰巨或令人厌烦的）任务，工作","x":"Our first task is to set up a communications system.","y":"我们的首项任务是架设通信系统。","id":"task|Ch1 R3"},{"w":"agent","p":"ˈeɪdʒənt","t":"四级","c":"Ch1 R3","u":"Unit 1","o":"n","e":"a person whose job is to act for, or manage the affairs of, other people in business, politics, etc.","z":"（商业、政治等的）代理人，经纪人","x":"Our agent in New York deals with all US sales.","y":"我们在纽约的代理商经办在整个美国的销售。","id":"agent|Ch1 R3"},{"w":"sanction","p":"ˈsæŋkʃn","t":"六级","c":"Ch1 R3","u":"Unit 1","o":"n","e":"a course of action that can be used, if necessary, to make people obey a law or behave in a particular way","z":"制裁；约束；处罚","x":"The ultimate sanction will be the closure of the restaurant.","y":"最严厉的处罚将是关闭这家餐馆。","id":"sanction|Ch1 R3"},{"w":"model","p":"ˈmɒdl","t":"四级","c":"Ch1 R3","u":"Unit 1","o":"v","e":"take sb./sth. as an example for one’s action, plans, etc.","z":"以…为榜样；仿效","x":"The process of teaching by example is called modeling and it affects behavior far more than telling your children what to do.","y":"通过以身作则的方式教育孩子称为“言传身教”，这种管教方式远比直接告诉孩子该如何做效果来得更好。","id":"model|Ch1 R3"},{"w":"negative","p":"ˈnegətɪv","t":"学术","c":"Ch1 R3","u":"Unit 1","o":"adj","e":"considering only the bad side of sth./sb.; lacking enthusiasm or hope","z":"消极的，负面的；缺乏热情的","x":"Scientists have a fairly negative attitude to the theory.","y":"科学家对这个理论的态度是相当消极的。","id":"negative|Ch1 R3"},{"w":"positive","p":"ˈpɒzətɪv","t":"学术","c":"Ch1 R3","u":"Unit 1","o":"adj","e":"directed at dealing with sth. or producing a successful result","z":"积极的，建设性的；朝着成功的","x":"It will require positive action by all in the industry.","y":"这将需要业内全体同人和衷共济。","id":"positive|Ch1 R3"},{"w":"disobedient","p":"ˌdɪsəˈbi:diənt","t":"六级","c":"Ch1 R3","u":"Unit 1","o":"adj","e":"failing or refusing to obey","z":"不服从的；违抗的","x":"Her tone was that of a parent to a disobedient child.","y":"她的语气就像是一个家长在训自己不听话的孩子。","id":"disobedient|Ch1 R3"},{"w":"assume","p":"əˈsju:m","t":"学术","c":"Ch1 R3","u":"Unit 1","o":"v","e":"to think or accept that sth. is true but without having proof of it","z":"假定；认为","x":"It is reasonable to assume that the economy will continue to improve.","y":"认为经济将继续好转是有道理的。","id":"assume|Ch1 R3"},{"w":"reveal","p":"rɪˈvi:l","t":"四级","c":"Ch1 R3","u":"Unit 1","o":"v","e":"to make sth. known to sb.","z":"揭示；显示；透露","x":"The report reveals that the company made a loss of £20 million last year.","y":"报告显示，公司去年亏损2000万英镑。","id":"reveal|Ch1 R3"},{"w":"chore","p":"tʃɔ:(r)","t":"四级","c":"Ch1 R3","u":"Unit 1","o":"n","e":"a task that you do regularly","z":"日常事务；例行工作","x":"My husband and I both go out to work so we share the household chores.","y":"我和丈夫都出去工作，所以我们家务活分摊。","id":"chore|Ch1 R3"},{"w":"trait","p":"treɪt","t":"六级","c":"Ch1 R3","u":"Unit 1","o":"n","e":"a particular quality in your personality","z":"（个性方面的）特征，特点","x":"Creativity is a human trait.","y":"创造力是人类的一种特性。","id":"trait|Ch1 R3"},{"w":"circumstance","p":"ˈsɜ:kəmstəns","t":"学术","c":"Ch1 R3","u":"Unit 1","o":"n","e":"(usu pl.) the conditions and facts that are connected with and affect a situation, an event or an action","z":"（常复数）条件，环境，状况","x":"I know I can trust her in any circumstance.","y":"我知道我在任何情况下都能信任她。","id":"circumstance|Ch1 R3"},{"w":"influence","p":"ˈɪnfluəns","t":"四级","c":"Ch2 R1","u":"Unit 1","o":"n","e":"the power to affect the way sb. or sth. develops, behaves, or thinks, without using direct force or orders","z":"影响（力），作用","x":"As a scientist, his influence was immense.","y":"身为一名科学家，他的影响力极大。","id":"influence|Ch2 R1"},{"w":"sociologist","p":"ˌsəʊsiˈɒlədʒɪst","t":"四级","c":"Ch2 R1","u":"Unit 1","o":"n","e":"a social scientist who studies the institutions and development of human society","z":"社会学家","x":"Professor Nee is the first and a leading sociologist to study market transition and institutional transformation.","y":"倪教授是第一位研究市场转型和制度变革的社会学家，也是该领域的领袖人物。","id":"sociologist|Ch2 R1"},{"w":"abnormal","p":"æbˈnɔ:rml","t":"学术","c":"Ch2 R1","u":"Unit 1","o":"adj","e":"being very different from usual in a way that seems strange, worrying, wrong, or dangerous","z":"不正常的；变态的","x":"My parents thought it was abnormal for a boy to be interested in ballet.","y":"我父母认为一个男孩子对芭蕾舞感兴趣并不正常。","id":"abnormal|Ch2 R1"},{"w":"norm","p":"nɔ:rm","t":"学术","c":"Ch2 R1","u":"Unit 1","o":"n","e":"the usual or normal situation, way of doing sth., etc.","z":"常态；标准；准则；规范","x":"Joyce’s style of writing was a striking departure from the literary norm.","y":"乔伊斯的写作风格与传统的文学规范大相径庭。","id":"norm|Ch2 R1"},{"w":"professional","p":"prəˈfeʃənl","t":"学术","c":"Ch2 R1","u":"Unit 1","o":"adj","e":"showing that someone has been well trained and is good at their work","z":"专业的，内行的","x":"This business plan looks very professional.","y":"该商业计划看上去很专业。","id":"professional|Ch2 R1"},{"w":"violate","p":"ˈvaɪəleɪt","t":"四级","c":"Ch2 R1","u":"Unit 1","o":"v","e":"to disobey or do sth. against an official agreement, law, principle, etc.","z":"违背，违反","x":"34 protesters were arrested for violating criminal law.","y":"34名抗议者因违反刑法而被逮捕。","id":"violate|Ch2 R1"},{"w":"penalty","p":"ˈpenəlti","t":"四级","c":"Ch2 R1","u":"Unit 1","o":"n","e":"a punishment for breaking a law, rule, or legal agreement","z":"（因违反法律、规则或合约而受到的）惩罚，处罚","x":"The fees and penalty charges ballooned.","y":"花费和罚款费用一路激增。","id":"penalty|Ch2 R1"},{"w":"aware","p":"əˈweə(r)","t":"学术","c":"Ch2 R1","u":"Unit 1","o":"adj","e":"having knowledge or realization of sb./sth.","z":"意识到的，明白的，知道的","x":"Mr. Braley has been made aware of the need for absolute secrecy.","y":"布雷利先生被告知需要绝对保密。","id":"aware|Ch2 R1"},{"w":"courtesy","p":"ˈkɜ:təsi","t":"六级","c":"Ch2 R1","u":"Unit 1","o":"n","e":"polite behaviour and respect for other people","z":"有礼的举止，礼貌","x":"It’s a matter of common courtesy to acknowledge letters.","y":"确认收到来信是起码的礼貌。","id":"courtesy|Ch2 R1"},{"w":"violation","p":"ˌvaɪəˈleɪʃn","t":"学术","c":"Ch2 R1","u":"Unit 1","o":"n","e":"an action that breaks a law, agreement, principle, etc.","z":"（对法律、协议、原则等的）违背，违反","x":"Troops crossed the border in violation of the agreement.","y":"部队违反协议，越过了边界。","id":"violation|Ch2 R1"},{"w":"severe","p":"sɪˈvɪə(r)","t":"四级","c":"Ch2 R1","u":"Unit 1","o":"adj","e":"(problems, injuries, illnesses, etc.) very bad or serious","z":"（问题、伤势、疾病等）很严重的","x":"His injuries were quite severe.","y":"他的伤势很严重。","id":"severe|Ch2 R1"},{"w":"enforce","p":"ɪnˈfɔ:s","t":"学术","c":"Ch2 R1","u":"Unit 1","o":"v","e":"to make people obey a rule or law","z":"执行，实施（法律）","x":"Parking restrictions will be strictly enforced.","y":"停车限制将会严格执行。","id":"enforce|Ch2 R1"},{"w":"crime","p":"kraɪm","t":"四级","c":"Ch2 R1","u":"Unit 1","o":"n","e":"illegal activities in general","z":"（泛指）犯罪活动","x":"We moved here because there was very little crime.","y":"我们搬到这里来是因为这里的犯罪率很低。","id":"crime|Ch2 R1"},{"w":"underlying","p":"ˌʌndəˈlaɪɪŋ","t":"六级","c":"Ch2 R1","u":"Unit 1","o":"adj","e":"in the nature of sth. though not readily apparent","z":"潜在的；根本的","x":"There is an underlying assumption that younger workers are easier to train.","y":"有一种潜在的假设，认为年轻一些的雇员容易培训。","id":"underlying|Ch2 R1"},{"w":"humility","p":"hju:ˈmɪləti","t":"六级","c":"Ch2 R1","u":"Unit 1","o":"n","e":"the quality of not being too proud about yourself","z":"谦逊，谦恭","x":"Her first defeat was an early lesson in humility.","y":"她的第一次失败使她很早便懂得了谦逊。","id":"humility|Ch2 R1"},{"w":"persist","p":"pəˈsɪst","t":"学术","c":"Ch2 R1","u":"Unit 1","o":"v","e":"to continue to exist","z":"持续；存留","x":"Fog will persist throughout the night.","y":"雾将整夜不散。","id":"persist|Ch2 R1"},{"w":"fertility","p":"fəˈtɪləti","t":"四级","c":"Ch2 R1","u":"Unit 1","o":"n","e":"the ability of a person, animal, or plant to produce babies, young animals, or seeds","z":"多产，生育能力，繁殖力","x":"Eggs symbolize fertility in some culture.","y":"某些文化中，蛋是多产的象征。","id":"fertility|Ch2 R1"},{"w":"peer","p":"pɪə(r)","t":"四级","c":"Ch2 R2","u":"Unit 1","o":"n","e":"the people who are the same age, or who have the same type of job, social class, etc.","z":"同龄人；社会地位相同的人","x":"American children did less well in math than their peers in Japan.","y":"美国儿童的数学成绩不如日本的同龄儿童。","id":"peer|Ch2 R2"},{"w":"adolescence","p":"ˌædəˈlesns","t":"六级","c":"Ch2 R2","u":"Unit 1","o":"n","e":"the time, usually between the ages of 12 and 18, when a young person is developing into an adult","z":"青春期","x":"No one wants to go through adolescence again.","y":"没人想再一次经历青春期。","id":"adolescence|Ch2 R2"},{"w":"involve","p":"ɪnˈvɒlv","t":"学术","c":"Ch2 R2","u":"Unit 1","o":"v","e":"cause sb./sth. to take part in (an activity or a situation)","z":"使…参与（某活动）或陷入（某情况）","x":"We want to involve the workforce at all stages of the decision-making process.","y":"我们希望让职员全程参与决策。","id":"involve|Ch2 R2"},{"w":"be involved with","p":"","t":"学术","c":"Ch2 R2","u":"Unit 1","o":"phr.","e":"to connect closely","z":"涉及，与…有关联","x":"I don’t want my son to be involved with criminals.","y":"我不想让我的儿子同犯罪分子来往。","id":"be involved with|Ch2 R2"},{"w":"authority","p":"ɔ:ˈθɒrəti","t":"学术","c":"Ch2 R2","u":"Unit 1","o":"n","e":"power to give orders and make others obey","z":"权力；权威","x":"Only the president has the authority to declare war.","y":"只有总统才有权宣战。","id":"authority|Ch2 R2"},{"w":"ignore","p":"ɪgˈnɔ:(r)","t":"学术","c":"Ch2 R2","u":"Unit 1","o":"v","e":"to deliberately pay no attention to sth. that you have been told or that you know about","z":"（故意对知道的事）置之不理","x":"You can’t ignore the fact that many criminals never go to prison.","y":"你不能无视很多罪犯从未获刑的事实。","id":"ignore|Ch2 R2"},{"w":"rebel","p":"rɪˈbel","t":"四级","c":"Ch2 R2","u":"Unit 1","o":"v","e":"to oppose or fight against someone in a position of control","z":"反叛","x":"The people have rebelled against their foreign rulers.","y":"人民反抗他们的外国统治者。","id":"rebel|Ch2 R2"},{"w":"rebellious","p":"rɪˈbeljəs","t":"四级","c":"Ch2 R2","u":"Unit 1","o":"adj","e":"disobedient and hard to control","z":"反抗的，难控制的，反叛的","x":"The rebellious troops attempted to subvert the present government.","y":"叛军曾企图推翻现政府。","id":"rebellious|Ch2 R2"},{"w":"individualism","p":"ˌɪndɪˈvɪdʒuəlɪzəm","t":"四级","c":"Ch2 R2","u":"Unit 1","o":"n","e":"the belief that the rights and freedom of individual people are the most important rights in a society","z":"个人主义（视个人权利和自由至上的信仰）","x":"Capitalism encourages competition and individualism.","y":"资本主义鼓励竞争，提倡个人主义。","id":"individualism|Ch2 R2"},{"w":"distinct","p":"dɪˈstɪŋkt","t":"学术","c":"Ch2 R2","u":"Unit 1","o":"adj","e":"clearly different or separate","z":"明显的，独特的","x":"The party split into two distinct groups.","y":"该党分裂成两个截然不同的团体。","id":"distinct|Ch2 R2"},{"w":"celebrity","p":"səˈlebrəti","t":"六级","c":"Ch2 R2","u":"Unit 1","o":"n","e":"a famous living person","z":"名人，明星","x":"He’s a national celebrity.","y":"他是全国有名的人物。","id":"celebrity|Ch2 R2"},{"w":"recreation","p":"ˌrekriˈeɪʃn","t":"四级","c":"Ch2 R2","u":"Unit 1","o":"n","e":"an activity that you do for pleasure or amusement","z":"娱乐，消遣","x":"His only recreations are drinking beer and watching football.","y":"他唯一的消遣就是喝啤酒、看球赛。","id":"recreation|Ch2 R2"},{"w":"incline","p":"ɪnˈklaɪn","t":"四级","c":"Ch2 R2","u":"Unit 1","o":"v","e":"to influence someone towards a particular action or opinion","z":"使倾向于（某种行动或观点）","x":"The accident inclined him to reconsider his career.","y":"这次意外使他重新考虑他的职业。","id":"incline|Ch2 R2"},{"w":"be inclined to","p":"","t":"四级","c":"Ch2 R2","u":"Unit 1","o":"phr.","e":"to have a tendency to do","z":"倾向于…","x":"The car is inclined to stall when it’s cold outside.","y":"这辆汽车天冷时爱熄火。","id":"be inclined to|Ch2 R2"},{"w":"financial","p":"faɪˈnænʃl","t":"四级","c":"Ch2 R2","u":"Unit 1","o":"adj","e":"relating to money or the management of money","z":"财政的，金融的，财务的","x":"Organic farmers should be encouraged with financial incentives.","y":"应对实行有机栽培的农民给予经济上的鼓励。","id":"financial|Ch2 R2"},{"w":"approval","p":"əˈpru:vl","t":"四级","c":"Ch2 R2","u":"Unit 1","o":"n","e":"feeling or showing or saying that one thinks sth. is good or acceptable or satisfactory","z":"赞成；认可；满意；同意","x":"The president has already given his approval to the plan.","y":"总统已经批准了这个计划。","id":"approval|Ch2 R2"},{"w":"conformity","p":"kənˈfɔ:məti","t":"学术","c":"Ch2 R2","u":"Unit 1","o":"n","e":"behaving in the same way as most other people","z":"遵从，一致","x":"We must act in conformity with local regulations.","y":"我们必须按当地的法规行事。","id":"conformity|Ch2 R2"},{"w":"exclude","p":"ɪkˈsklu:d","t":"四级","c":"Ch2 R2","u":"Unit 1","o":"v","e":"to deliberately not include sth.","z":"（故意）不包括；把…排除在外","x":"The judges decided to exclude evidence which had been unfairly attained.","y":"法官裁决不接纳以不正当手段获取的证据。","id":"exclude|Ch2 R2"},{"w":"clique","p":"klik","t":"六级","c":"Ch2 R2","u":"Unit 1","o":"n","e":"a small group of people who think they are special and do not want other people to join them","z":"派系；小圈子；小集团（含贬义）","x":"All of the cliques were formed by high school students.","y":"这些都是由中学生组成的小圈子。","id":"clique|Ch2 R2"},{"w":"bullying","p":"ˈbuliŋ","t":"四级","c":"Ch2 R2","u":"Unit 1","o":"n","e":"the act of intimidating a weaker person to make them do sth.","z":"欺凌，恃强凌弱的行为","x":"She measured \"bullying incidents\" by distributing surveys to both the students and the teachers and found the answers to be remarkably consistent.","y":"她就“欺负事件”的发生次数向老师和同学进行了调查，发现两者的答案高度一致。","id":"bullying|Ch2 R2"},{"w":"tease","p":"tiz","t":"六级","c":"Ch2 R2","u":"Unit 1","o":"v","e":"to laugh at someone and make jokes in order to have fun by embarrassing them, either in a friendly way or in an unkind way","z":"戏弄，逗弄；拿…开玩笑","x":"Don’t get upset. I was only teasing.","y":"别生气，我只是在逗你玩。","id":"tease|Ch2 R2"},{"w":"harassment","p":"ˈhærəsmənt","t":"六级","c":"Ch2 R2","u":"Unit 1","o":"n","e":"the act of tormenting by continued persistent attacks and criticism","z":"骚扰","x":"African-Americans have been complaining about police harassment for years.","y":"美国黑人多年来一直抱怨受到警察的骚扰。","id":"harassment|Ch2 R2"},{"w":"abuse","p":"əˈbju:s","t":"四级","c":"Ch2 R2","u":"Unit 1","o":"n","e":"cruel or violent treatment of someone","z":"虐待","x":"Many children suffer racial abuse at school.","y":"许多孩子在学校遭受种族虐待。","id":"abuse|Ch2 R2"},{"w":"be involved in","p":"","t":"四级","c":"Ch2 R3","u":"Unit 1","o":"phr.","e":"to engage as a participant","z":"包括到…中，被卷入…中","x":"Try to focus on the processes and people that will be involved in bringing your vision to reality.","y":"尽量聚焦于将您的远景变为现实所涉及到的流程和人员。","id":"be involved in|Ch2 R3"},{"w":"collective","p":"kəˈlektɪv","t":"四级","c":"Ch2 R3","u":"Unit 1","o":"adj","e":"shared or made by every member of a group or society","z":"集体的，共同的，共有的","x":"This is our collective responsibility for the environment.","y":"这是我们对环境的共同责任。","id":"collective|Ch2 R3"},{"w":"spontaneous","p":"spɒnˈteɪniəs","t":"四级","c":"Ch2 R3","u":"Unit 1","o":"adj","e":"said or done without having been planned or written in advance","z":"自发的；一时冲动的","x":"The crowd gave a spontaneous cheer.","y":"人群自发地欢呼起来。","id":"spontaneous|Ch2 R3"},{"w":"institutional","p":"ˌɪnstɪˈtju:ʃənl","t":"四级","c":"Ch2 R3","u":"Unit 1","o":"adj","e":"existing for a long time in an organization","z":"已形成制度的；惯例的","x":"There are accusations of institutional racism in the police force.","y":"对警察队伍中形成风气的种族主义有谴责的声音。","id":"institutional|Ch2 R3"},{"w":"occur","p":"əˈkɜ:(r)","t":"四级","c":"Ch2 R3","u":"Unit 1","o":"v","e":"to happen","z":"发生","x":"A third of accidental deaths occur in the home.","y":"有三分之一的意外死亡发生在家里。","id":"occur|Ch2 R3"},{"w":"religious","p":"rɪˈlɪdʒəs","t":"四级","c":"Ch2 R3","u":"Unit 1","o":"adj","e":"relating to religion in general or to a particular religion","z":"宗教的","x":"I don’t share her religious beliefs.","y":"我的宗教信仰和她的不同。","id":"religious|Ch2 R3"},{"w":"categorize","p":"ˈkætəɡəraɪz","t":"四级","c":"Ch2 R3","u":"Unit 1","o":"v","e":"to put people or things into groups according to the type of person or thing they are","z":"对…进行分类","x":"The population is categorized according to age, gender, and social group.","y":"人口根据年龄、性别和社会群体进行了分类。","id":"categorize|Ch2 R3"},{"w":"protest","p":"prəˈtest","t":"四级","c":"Ch2 R3","u":"Unit 1","o":"v","e":"express strong disagreement or disapproval about sth.","z":"抗议，反对","x":"Demonstrators protested outside the country’s embassies all over Europe.","y":"该国驻欧洲各国的大使馆外都有群众进行抗议。","id":"protest|Ch2 R3"},{"w":"tragedy","p":"ˈtrædʒədi","t":"四级","c":"Ch2 R3","u":"Unit 1","o":"n","e":"a very sad event that shocks people","z":"悲剧性事件，惨剧","x":"The tragedy happened as they were returning home from a night out.","y":"悲剧发生在他们夜里外出归来的路上。","id":"tragedy|Ch2 R3"},{"w":"hostile","p":"ˈhɒstaɪl","t":"四级","c":"Ch2 R3","u":"Unit 1","o":"adj","e":"angry and deliberately unfriendly towards someone, and ready to argue with them","z":"怀有敌意的，敌对的，不友善的","x":"Southampton fans gave their former coach a hostile reception.","y":"南安普敦队的球迷对前任教练很不友善。","id":"hostile|Ch2 R3"},{"w":"violent","p":"ˈvaɪələnt","t":"四级","c":"Ch2 R3","u":"Unit 1","o":"adj","e":"involving actions that are intended to injure or kill people, by hitting them, shooting them, etc.","z":"暴力的；强暴的","x":"31 people have been injured in violent incidents throughout the day.","y":"今天一天有31人在暴力事件中受伤。","id":"violent|Ch2 R3"},{"w":"panic","p":"ˈpænɪk","t":"四级","c":"Ch2 R3","u":"Unit 1","o":"n","e":"a sudden strong feeling of fear or nervousness that makes you unable to think clearly or behave sensibly","z":"惶恐，惊恐，惊慌","x":"She got into a panic when she couldn’t find the tickets.","y":"她找不到票，慌了起来。","id":"panic|Ch2 R3"},{"w":"irrational","p":"ɪˈræʃənl","t":"四级","c":"Ch2 R3","u":"Unit 1","o":"adj","e":"not based on clear thought or reason","z":"非理性的，不合理的，荒谬的","x":"He’s becoming increasingly irrational.","y":"他变得越来越不可理喻了。","id":"irrational|Ch2 R3"},{"w":"pilgrim","p":"ˈpɪlgrɪm","t":"六级","c":"Ch2 R3","u":"Unit 1","o":"n","e":"a religious person who travels a long way to a holy place","z":"朝圣者，香客","x":"Thousands of pilgrims visit the holy shrine every year.","y":"每年有成千上万的朝圣者来祭拜圣庙。","id":"pilgrim|Ch2 R3"},{"w":"stampede","p":"stæmˈpi:d","t":"六级","c":"Ch2 R3","u":"Unit 1","o":"n","e":"sudden wild rush or mass movement of people","z":"（指人）突然的大规模移动","x":"There was a stampede towards the stage when the singer appeared.","y":"歌手出现时，观众向台前涌去。","id":"stampede|Ch2 R3"},{"w":"contagion","p":"kənˈteɪdʒən","t":"六级","c":"Ch2 R3","u":"Unit 1","o":"n","e":"a situation in which a disease is spread by people touching each other","z":"（疾病的）接触传染","x":"There is some danger of contagion.","y":"有接触传染的危险。","id":"contagion|Ch2 R3"},{"w":"primitive","p":"ˈprɪmətɪv","t":"四级","c":"Ch2 R3","u":"Unit 1","o":"adj","e":"belonging to a simple way of life that existed in the past and does not have modern industries and machines","z":"原始的，远古的","x":"A group of people were attacked by a primitive nomadic tribe.","y":"一伙人受了到一个原始游牧部落的攻击。","id":"primitive|Ch2 R3"},{"w":"emerge","p":"iˈmɜ:dʒ","t":"四级","c":"Ch2 R3","u":"Unit 1","o":"v","e":"to appear or come out from somewhere","z":"出现，浮现","x":"Eventually the truth emerged.","y":"真相终于大白。","id":"emerge|Ch2 R3"},{"w":"civilize","p":"ˈsɪvəlaɪz","t":"四级","c":"Ch2 R3","u":"Unit 1","o":"v","e":"to influence someone’s behaviour, making or teaching them to act in a more sensible or gentle way","z":"教化，使有教养","x":"The missionaries went out to civilize other places.","y":"传教士们去异乡教化当地人民。","id":"civilize|Ch2 R3"},{"w":"perspective","p":"pəˈspektɪv","t":"四级","c":"Ch2 R3","u":"Unit 1","o":"n","e":"a way of thinking about sth., especially one that is influenced by the type of person you are or by your experiences","z":"（思考问题的）角度，观点，想法","x":"His father’s death gave him a whole new perspective on life.","y":"父亲的死使他对生活有了全新的看法。","id":"perspective|Ch2 R3"},{"w":"emergent","p":"iˈmɜ:dʒənt","t":"四级","c":"Ch2 R3","u":"Unit 1","o":"adj","e":"coming into existence","z":"新出现的；处于萌芽阶段的","x":"Bioengineering is an emergent branch of learning.","y":"生物工程是一门新兴的学问。","id":"emergent|Ch2 R3"},{"w":"destructive","p":"dɪˈstrʌktɪv","t":"四级","c":"Ch2 R3","u":"Unit 1","o":"adj","e":"causing damage to people or things","z":"毁灭性的，造成破坏的","x":"What is good for the individual can be destructive to the family.","y":"个人的好处对于家庭来说有可能是破坏性的。","id":"destructive|Ch2 R3"},{"w":"oppose","p":"əˈpəʊz","t":"四级","c":"Ch2 R3","u":"Unit 1","o":"v","e":"to disagree with sth. such as a plan or idea and try to prevent it from happening or succeeding","z":"反对；阻碍","x":"Congress is continuing to oppose the President’s health care budget.","y":"国会继续反对总统的医疗保健预算。","id":"oppose|Ch2 R3"},{"w":"collapse","p":"kəˈlæps","t":"四级","c":"Ch2 R3","u":"Unit 1","o":"v","e":"fall down or in suddenly","z":"突然倒塌，坍塌","x":"Uncle Ted’s chair collapsed under his weight.","y":"椅子承受不了泰德叔叔的重量，塌架了。","id":"collapse|Ch2 R3"},{"w":"riot","p":"ˈraɪət","t":"四级","c":"Ch2 R3","u":"Unit 1","o":"v","e":"behave in a violent and uncontrolled way, especially when people are protesting about sth.","z":"暴乱，暴动","x":"Last year 600 inmates rioted, starting fires and building barricades.","y":"去年，600名犯人闹事，他们纵火并设置路障。","id":"riot|Ch2 R3"},{"w":"tend to","p":"","t":"四级","c":"Ch3 R1","u":"Unit2","o":"phr.","e":"to be likely to do sth. or to happen in a particular way because this is what often or usually happens","z":"往往会；常常就","x":"Women tend to live longer than men.","y":"女人往往比男人长寿。","id":"tend to|Ch3 R1"},{"w":"handle","p":"ˈhændl","t":"四级","c":"Ch3 R1","u":"Unit2","o":"v","e":"to deal with a situation, a person, an area of work or a strong emotion","z":"处理，应付（局势、人、工作或感情）","x":"She’s very good at handling her patients.","y":"她对待病人很有办法。","id":"handle|Ch3 R1"},{"w":"cuddle","p":"ˈkʌdl","t":"四级","c":"Ch3 R1","u":"Unit2","o":"v","e":"to hold sb./sth. close in your arms to show love or affection","z":"拥抱；搂抱","x":"The little boy cuddled the teddy bear close.","y":"小男孩紧紧地搂着玩具熊。","id":"cuddle|Ch3 R1"},{"w":"bounce","p":"baʊns","t":"四级","c":"Ch3 R1","u":"Unit2","o":"v","e":"to move a child up and down while he or she is sitting on your knee in order to entertain him or her","z":"把小孩放在膝上颠着玩","x":"Patsy had picked up the baby and was bouncing him on her knee.","y":"帕齐抱起婴儿放在膝上颠动着。","id":"bounce|Ch3 R1"},{"w":"socialize","p":"ˈsəʊʃəlaɪz","t":"六级","c":"Ch3 R1","u":"Unit2","o":"v","e":"(formal) to teach people to behave in ways that are acceptable to their society","z":"使社会化","x":"The family has the important function of socializing children.","y":"家庭有教孩子适应社会的重要作用。","id":"socialize|Ch3 R1"},{"w":"transfer","p":"trænsˈfɜ:(r)","t":"学术","c":"Ch3 R1","u":"Unit2","o":"v","e":"to move from one place to another; to move sb./sth. from one place to another","z":"（使）转移，搬迁","x":"I couldn’t transfer all my credits from junior college.","y":"我无法把我在专科学校的所有学分都转过来。","id":"transfer|Ch3 R1"},{"w":"fit","p":"fɪt","t":"四级","c":"Ch3 R1","u":"Unit2","o":"v","e":"If something fits something else or fits into it, it goes together well with that thing or is able to be part of it.","z":"与相配；相协调；符合","x":"Fostering is a full-time job and you should carefully consider how it will fit into your career.","y":"抚养孩子是全天候的事，你应该仔细考虑如何将它与事业协调起来。","id":"fit|Ch3 R1"},{"w":"furthermore","p":"ˌfɜ:ðəˈmɔ:(r)","t":"学术","c":"Ch3 R1","u":"Unit2","o":"adv","e":"(formal) in addition to what has just been stated, used especially to add a point to an argument","z":"此外；而且；再者","x":"Furthermore, they claim that any such interference is completely ineffective.","y":"此外，他们还声称任何这样的干预都是完全无效的。","id":"furthermore|Ch3 R1"},{"w":"imitate","p":"ˈɪmɪteɪt","t":"四级","c":"Ch3 R1","u":"Unit2","o":"v","e":"to copy sb./sth.","z":"模仿；仿效","x":"Teachers provide a model for children to imitate.","y":"教师是孩子仿效的典范。","id":"imitate|Ch3 R1"},{"w":"rely on","p":"","t":"四级","c":"Ch3 R1","u":"Unit2","o":"phr.","e":"to need or depend on sb./sth.","z":"依赖；依靠","x":"As babies, we rely entirely on others for food.","y":"在婴儿时期，我们完全依赖别人喂食。","id":"rely on|Ch3 R1"},{"w":"intelligence","p":"ɪnˈtelɪdʒəns","t":"四级","c":"Ch3 R1","u":"Unit2","o":"n","e":"the ability to learn, understand and think in a logical way about things; the ability to do this well","z":"智力；才智；智慧","x":"He didn’t even have the intelligence to call for an ambulance.","y":"他连呼叫救护车的头脑都没有。","id":"intelligence|Ch3 R1"},{"w":"feminine","p":"ˈfemənɪn","t":"六级","c":"Ch3 R1","u":"Unit2","o":"adj","e":"having the qualities or appearance considered to be typical of women; connected with women","z":"（指气质或外貌）女性特有的，女性的，妇女的","x":"He had delicate, almost feminine, features.","y":"他面目清秀，跟女性差不多。","id":"feminine|Ch3 R1"},{"w":"macho","p":"ˈmætʃəʊ","t":"四级","c":"Ch3 R1","u":"Unit2","o":"adj","e":"(usually disapproving) male in an aggressive way","z":"大男子气的；男子汉的","x":"He’s too macho to ever admit he was wrong.","y":"他太大男子主义了，从不认错。","id":"macho|Ch3 R1"},{"w":"masculine[ˈmæskjəlɪn","p":"","t":"六级","c":"Ch3 R1","u":"Unit2","o":"adj","e":"having the qualities or appearance considered to be typical of men; connected with or like men","z":"男子汉的；男人的；像男人的","x":"He was handsome and strong, and very masculine.","y":"他英俊强壮，富有男子汉气概","id":"masculine[ˈmæskjəlɪn|Ch3 R1"},{"w":"rough","p":"rʌf","t":"四级","c":"Ch3 R1","u":"Unit2","o":"adj","e":"not gentle or careful; violent","z":"粗暴的；粗野的；猛烈的","x":"They complained of rough handling by the guards.","y":"他们投诉警卫对他们动粗了。","id":"rough|Ch3 R1"},{"w":"physical","p":"ˈfɪzɪkl","t":"四级","c":"Ch3 R1","u":"Unit2","o":"adj","e":"connected with a person’s body rather than their mind","z":"身体的；肉体的；躯体的","x":"He tends to avoid all physical contact.","y":"他倾向于避免一切身体接触。","id":"physical|Ch3 R1"},{"w":"engage","p":"ɪnˈgeɪdʒ","t":"四级","c":"Ch3 R1","u":"Unit2","o":"v","e":"If you engage in an activity, you do it or are actively involved with it.","z":"参与；从事","x":"I have no time to engage in gossip.","y":"我无暇闲聊。","id":"engage|Ch3 R1"},{"w":"dominant","p":"ˈdɒmɪnənt","t":"六级","c":"Ch3 R1","u":"Unit2","o":"adj","e":"more important, powerful or noticeable than other things","z":"首要的；占支配地位的；占优势的；显著的","x":"The dominant feature of the room was the large fireplace.","y":"这间屋子要数那个大壁炉最显眼了。","id":"dominant|Ch3 R1"},{"w":"intense","p":"ɪnˈtens","t":"学术","c":"Ch3 R1","u":"Unit2","o":"adj","e":"very great; very strong","z":"很大的；十分强烈的","x":"The President is under intense pressure to resign.","y":"总统承受着沉重的辞职压力。","id":"intense|Ch3 R1"},{"w":"focus","p":"ˈfəʊkəs","t":"学术","c":"Ch3 R1","u":"Unit2","o":"v","e":"to give attention, effort, etc. to one particular subject, situation or person rather than another","z":"集中（注意力、精力等）于","x":"The discussion focused on three main problems.","y":"讨论集中在三个主要问题上。","id":"focus|Ch3 R1"},{"w":"expectation","p":"ekspekˈteɪʃn","t":"四级","c":"Ch3 R1","u":"Unit2","o":"n","e":"a belief that sth. will happen because it is likely","z":"预料；预期；期待","x":"Against all expectations, she was enjoying herself.","y":"完全没想到她过得非常快活。","id":"expectation|Ch3 R1"},{"w":"forbid","p":"fəˈbɪd","t":"四级","c":"Ch3 R1","u":"Unit2","o":"v","e":"to order sb. not to do sth.; to order that sth. must not be done","z":"禁止；不准","x":"Her father forbade the marriage.","y":"她的父亲不允许这桩婚事。","id":"forbid|Ch3 R1"},{"w":"resist","p":"rɪˈzɪst","t":"四级","c":"Ch3 R1","u":"Unit2","o":"v","e":"to refuse to accept sth. and try to stop it from happening","z":"抵制；阻挡","x":"They are determined to resist the call for reform.","y":"他们决心拒绝实施改革的号召。","id":"resist|Ch3 R1"},{"w":"traditional","p":"trəˈdɪʃənl","t":"学术","c":"Ch3 R1","u":"Unit2","o":"adj","e":"(sometimes disapproving) following older methods and ideas rather than modern or different ones","z":"传统的；因袭的；守旧的","x":"We’re still a traditional school in a lot of ways.","y":"我们在很多方面仍是一所旧式学校。","id":"traditional|Ch3 R1"},{"w":"bring up","p":"","t":"四级","c":"Ch3 R1","u":"Unit2","o":"phr.","e":"to care for a child, teaching him or her how to behave, etc.","z":"抚养；养育；教养","x":"He was brought up by his aunt.","y":"他是由姨妈带大的。","id":"bring up|Ch3 R1"},{"w":"neutral","p":"ˈnju:trəl","t":"学术","c":"Ch3 R1","u":"Unit2","o":"adj","e":"not supporting or helping either side in a disagreement, competition, etc.","z":"中立的；持平的；无倾向性的","x":"Journalists are supposed to be politically neutral.","y":"新闻工作者在政治上应持中立态度。","id":"neutral|Ch3 R1"},{"w":"mechanical","p":"məˈkænɪkl","t":"四级","c":"Ch3 R2","u":"Unit2","o":"adj","e":"relatingtomachinesandenginesandthewaytheywork","z":"机械方面的；机械原理的","x":"Thecompanyundertakesmechanicalworkonalltypesofcars.","y":"该公司承接各类汽车的修理工作。","id":"mechanical|Ch3 R2"},{"w":"consistently","p":"kən'sɪstəntlɪ","t":"学术","c":"Ch3 R2","u":"Unit2","o":"adv","e":"(approving)alwaysbehavinginthesameway,orhavingthesameopinions,standards,etc.","z":"一致的；始终如一的","x":"Herworkhasbeenofaconsistentlyhighstandard.","y":"她的工作一直是高水准的。","id":"consistently|Ch3 R2"},{"w":"remain","p":"rɪˈmeɪn","t":"四级","c":"Ch3 R2","u":"Unit2","o":"v","e":"tocontinuetobesth.;tobestillinthesamestateorcondition","z":"仍然是；保持不变","x":"Trainfaresarelikelytoremainunchanged.","y":"火车票价很可能会保持不变。","id":"remain|Ch3 R2"},{"w":"bias","p":"ˈbaɪəs","t":"六级","c":"Ch3 R2","u":"Unit2","o":"n","e":"astrongfeelinginfavouroforagainstonegroupofpeopleoronesideinanargument,oftennotbasedonfairjudgement","z":"偏见；偏心；偏向","x":"Someinstitutionsstillhaveastrongbiasagainstwomen.","y":"有些机构仍然对妇女持有很大偏见。","id":"bias|Ch3 R2"},{"w":"unintentional","p":"ʌnɪnˈtenʃənl","t":"四级","c":"Ch3 R2","u":"Unit2","o":"adj","e":"notdonedeliberately,buthappeningbyaccident","z":"无意的；非故意的；偶然的","x":"PerhapsImisledyou,butitwasquiteunintentional.","y":"也许我误导了你，但那绝不是有意的。","id":"unintentional|Ch3 R2"},{"w":"setting","p":"ˈsetɪŋ","t":"四级","c":"Ch3 R2","u":"Unit2","o":"n","e":"asetofsurroundings;theplaceatwhichsth.happens","z":"环境；背景","x":"ItwastheperfectsettingforawonderfulChristmas.","y":"环境气氛无可挑剔，正是一个美好的圣诞节所需要的。","id":"setting|Ch3 R2"},{"w":"devote","p":"dɪˈvəʊt","t":"学术","c":"Ch3 R2","u":"Unit2","o":"v","e":"togiveanamountoftime,attention,etc.tosth","z":"把…用于","x":"Icouldonlydevotetwohoursadaytothework.","y":"我一天只能在这个工作上花两个小时。","id":"devote|Ch3 R2"},{"w":"assertive","p":"əˈsɜ:tɪv","t":"六级","c":"Ch3 R2","u":"Unit2","o":"adj","e":"expressingopinionsordesiresstronglyandwithconfidence,sothatpeopletakenotice","z":"坚定自信的；主张坚决的","x":"Womenhavebecomemoreassertiveinthepastdecade.","y":"女性在过去十年中已变得更加自信。","id":"assertive|Ch3 R2"},{"w":"self-esteem","p":"selfɪˈsti:m","t":"六级","c":"Ch3 R2","u":"Unit2","o":"n","e":"afeelingofbeinghappywithyourowncharacterandabilities","z":"自尊（心）","x":"Poorself-esteemisatthecentreofmanyofthedifficultiesweexperienceinourrelationships.","y":"缺乏自尊心是我们之间关系所遭遇的重重困难中的核心问题。","id":"self-esteem|Ch3 R2"},{"w":"suggest","p":"səˈdʒest","t":"四级","c":"Ch3 R2","u":"Unit2","o":"v","e":"toputanideaintosb.’smind;tomakesb.thinkthatsth.istrue","z":"使想到；使认为；表明","x":"Thesymptoms suggestaminorheartattack.","y":"症状显示这是轻微心脏病发作。","id":"suggest|Ch3 R2"},{"w":"industrialized","p":"ɪnˈdʌstriəlaɪzd","t":"四级","c":"Ch3 R2","u":"Unit2","o":"adj","e":"Anindustrializedareaorplaceisonewhichhasalotofindustries.","z":"工业化的","x":"Industrializedcountriesmustreducecarbondioxideemissions.","y":"工业化国家必须减少二氧化碳的排放。","id":"industrialized|Ch3 R2"},{"w":"superior","p":"su:ˈpɪəriə(r)","t":"四级","c":"Ch3 R2","u":"Unit2","o":"adj","e":"betterinqualitythansb./sth.else;greaterthansb./sth.else","z":"更好的；占优势的；更胜一筹的","x":"Thismodelistechnicallysuperiortoitscompetitors.","y":"这一款式在技术上超过了与之竞争的产品。","id":"superior|Ch3 R2"},{"w":"emphasize","p":"ˈemfəsaɪz","t":"学术","c":"Ch3 R2","u":"Unit2","o":"v","e":"togivespecialimportancetosth.","z":"强调；重视；着重","x":"Hisspeechemphasizedtheimportanceofattractingindustrytothetown.","y":"他的发言强调了吸引工业到这个城镇的重要性。","id":"emphasize|Ch3 R2"},{"w":"mature","p":"məˈtʃʊə(r)","t":"学术","c":"Ch3 R2","u":"Unit2","o":"v","e":"tobecomefullygrownordeveloped","z":"成熟；长成","x":"Thisparticularbreedofcattlematuresearly.","y":"这一品种的牛发育成熟快。","id":"mature|Ch3 R2"},{"w":"consequently","p":"ˈkɒnsɪkwəntli","t":"四级","c":"Ch3 R2","u":"Unit2","o":"adv","e":"asaresult;therefore","z":"因此；所以","x":"Thisposesathreattoagricultureandthefoodchain,andconsequentlytohumanhealth.","y":"这会对农业和食物链造成威胁，并由此危及人的健康。","id":"consequently|Ch3 R2"},{"w":"commit","p":"kəˈmɪt","t":"学术","c":"Ch3 R2","u":"Unit2","o":"v","e":"todosth.wrongorillegal","z":"做（错误或非法的事）；犯（罪或错等）","x":"Mostcrimesarecommittedbyyoungmen.","y":"多数罪行都是年轻男性犯下的。","id":"commit|Ch3 R2"},{"w":"agent","p":"ˈeɪdʒənt","t":"四级","c":"Ch3 R3","u":"Unit2","o":"n","e":"If you refer to sb. or sth. as the agent of a particular effect, you mean that they cause this effect.","z":"动力；媒介；因素；工具","x":"In many societies young men regard themselves as highly active, the agents of change, shapers of the world.","y":"许多社会中，年轻人将自己看成是高度活跃的分子，是变革的推动者和世界的塑造者。","id":"agent|Ch3 R3"},{"w":"mass media","p":"","t":"学术","c":"Ch3 R3","u":"Unit2","o":"phr.","e":"communications media that reach a large audience, for example, television, newspapers, and the Internet","z":"大众传媒","x":"The mass media have been vested with significant power as social and political agents in modern developed societies.","y":"在现代发达社会中，作为社会和政治媒介，大众传媒被赋予了很大的权力。","id":"mass media|Ch3 R3"},{"w":"primarily","p":"praɪˈmerəli","t":"学术","c":"Ch3 R3","u":"Unit2","o":"adv","e":"mainly","z":"主要地；根本地","x":"The problem is not primarily a financial one.","y":"这个问题基本上不是财政问题。","id":"primarily|Ch3 R3"},{"w":"dutiful","p":"ˈdju:tɪfl","t":"六级","c":"Ch3 R3","u":"Unit2","o":"adj","e":"doing everything that you are expected to do; willing to obey and to show respect","z":"尽职的；顺从的；恭敬的","x":"The days of the dutiful wife, who sacrifices her career for her husband, are over.","y":"贤妻为了丈夫而牺牲自己事业的时代已经结束了。","id":"dutiful|Ch3 R3"},{"w":"homemaker","p":"ˈhəʊmmeɪkə(r)","t":"四级","c":"Ch3 R3","u":"Unit2","o":"n","e":"(especially North American English) a person who works at home and takes care of the house and family","z":"料理家务者；操持家务者","x":"Her mother is a homemaker.","y":"她的母亲是个家庭主妇","id":"homemaker|Ch3 R3"},{"w":"portray","p":"pɔ:ˈtreɪ","t":"四级","c":"Ch3 R3","u":"Unit2","o":"v","e":"to describe or show sb./sth. in a particular way, especially when this does not give a complete or accurate impression of what they are like","z":"将…描写成；给人以某种印象","x":"Throughout the trial, he portrayed himself as the victim.","y":"在审讯过程中，他始终把自己说成是受害者。","id":"portray|Ch3 R3"},{"w":"body image","p":"","t":"学术","c":"Ch3 R3","u":"Unit2","o":"phr.","e":"a person’s perception of his or her body’s appearance","z":"（人们通过外界对自己体形及性别特征吸引力的评价而形成的）自我感觉","x":"From the survey, we can know 80% of men are not satisfied with their body image.","y":"根据调查，我们能知道八成的男性不满自己的形象。","id":"body image|Ch3 R3"},{"w":"close-up","p":"ˈkləʊsʌp","t":"六级","c":"Ch3 R3","u":"Unit2","o":"n","e":"a photograph, or picture in a film/movie, taken very close to sb./sth. so that it shows a lot of details","z":"（照相、电影的）特写，特写镜头","x":"It was strange to see her own face in close-up on the screen.","y":"在屏幕上看见她自己的脸部特写感觉很陌生。","id":"close-up|Ch3 R3"},{"w":"perceive","p":"pəˈsi:v","t":"学术","c":"Ch3 R3","u":"Unit2","o":"v","e":"to notice or become aware of sth.","z":"注意到；意识到；察觉到","x":"She perceived that all was not well.","y":"她意识到并非一切都顺利。","id":"perceive|Ch3 R3"},{"w":"survey","p":"sɜ:ˈveɪ","t":"四级","c":"Ch3 R3","u":"Unit2","o":"v","e":"to investigate the opinions or behaviour of a group of people by asking them a series of questions","z":"调查（某部分人）的行为﹑意见等","x":"We surveyed 500 smokers and found that over three quarters would like to give up.","y":"我们对500名吸烟者进行了调查，发现有超过四分之三的人愿意戒烟。","id":"survey|Ch3 R3"},{"w":"muscular","p":"ˈmʌskjələ(r)","t":"六级","c":"Ch3 R3","u":"Unit2","o":"adj","e":"having large strong muscles","z":"强壮的；肌肉发达的","x":"Like most female athletes, she was lean and muscular.","y":"像大多女运动员一样，她清瘦但肌肉发达。","id":"muscular|Ch3 R3"},{"w":"stereotype","p":"ˈsteriətaɪp","t":"六级","c":"Ch3 R3","u":"Unit2","o":"n","e":"a fixed idea or image that many people have of a particular type of person or thing, but which is often not true in reality","z":"模式化观念（或形象）；老一套；刻板印象","x":"Many men feel their body shape doesn’t live up to the stereotype of the ideal man.","y":"很多男人都觉得自己的体形不符合人们心目中惯有的理想男性形象。","id":"stereotype|Ch3 R3"},{"w":"co-star","p":"ˈkəʊstɑ:","t":"四级","c":"Ch3 R3","u":"Unit2","o":"n","e":"one of two or more famous actors who appear together in a film/movie or play","z":"（电影或戏剧中的）联袂主演明星","x":"During the filming, Curtis fell in love with his co-star, Christine Kaufmann.","y":"在电影摄制过程中，柯蒂斯爱上了同他联袂主演的明星克里斯汀·考夫曼。","id":"co-star|Ch3 R3"},{"w":"storyline","p":"ˈstɔ:rilaɪn","t":"六级","c":"Ch3 R3","u":"Unit2","o":"n","e":"the basic story in a novel, play, film/movie, etc.","z":"（小说、戏剧、电影等的）故事情节","x":"The surprise twists in the storyline are the film’s greatest strength.","y":"该影片最精彩之处就是剧情的曲折离奇。","id":"storyline|Ch3 R3"},{"w":"defend","p":"dɪˈfend","t":"四级","c":"Ch3 R3","u":"Unit2","o":"v","e":"to protect sb./sth. from attack","z":"防御；保护；保卫","x":"All our officers are trained to defend themselves against knife attacks.","y":"我们所有的警察都接受过自卫训练，能够对付持刀袭击。","id":"defend|Ch3 R3"},{"w":"reinforce","p":"ˌri:ɪnˈfɔ:s","t":"学术","c":"Ch3 R3","u":"Unit2","o":"v","e":"to make a feeling, an idea, etc. stronger","z":"加强；充实；使更强烈","x":"Such jokes tend to reinforce racial stereotypes.","y":"这样的笑话容易渲染种族偏见。","id":"reinforce|Ch3 R3"},{"w":"comic","p":"ˈkɒmɪk","t":"四级","c":"Ch3 R3","u":"Unit2","o":"n","e":"a magazine, especially for children, that tells stories through pictures","z":"（尤指儿童看的）连环画杂志","x":"Joe loved to read “Superman” comics.","y":"乔喜欢看《超人》的漫画","id":"comic|Ch3 R3"},{"w":"source","p":"sɔ:s","t":"四级","c":"Ch3 R3","u":"Unit2","o":"n","e":"a place, person or thing that you get sth. from","z":"来源；出处","x":"Our local library will be a useful source of information.","y":"我们当地的图书馆就是很好的资料来源。","id":"source|Ch3 R3"},{"w":"submissive","p":"səbˈmɪsɪv","t":"六级","c":"Ch3 R3","u":"Unit2","o":"adj","e":"willing to accept sb. else’s authority and willing to obey them without questioning anything they want you to do","z":"唯命是从的；顺从的；驯服的；听话的","x":"He expected his daughters to be meek and submissive.","y":"他期望女儿们都温顺听话。","id":"submissive|Ch3 R3"},{"w":"sexualize","p":"ˈsekʃuəlaɪz","t":"六级","c":"Ch3 R3","u":"Unit2","o":"v","e":"To sexualize sb./sth. means to make them sexual or consider them in a sexual way.","z":"使有性别；使有性征","x":"Referring to children’s friends as girlfriends and boyfriends sexualizes them.","y":"将孩子们的朋友称为女朋友或男朋友就把他们的性别差异凸显出来了。","id":"sexualize|Ch3 R3"},{"w":"exaggerate","p":"ɪgˈzædʒəreɪt","t":"四级","c":"Ch3 R3","u":"Unit2","o":"v","e":"to make sth. seem larger, better, worse or more important than it really is","z":"夸张；夸大","x":"He tends to exaggerate the difficulties.","y":"他往往夸大困难。","id":"exaggerate|Ch3 R3"},{"w":"feature","p":"ˈfi:tʃə(r)","t":"学术","c":"Ch3 R3","u":"Unit2","o":"n","e":"something important, interesting or typical of a place or thing","z":"特色；特征；特点","x":"An interesting feature of the city is the old market.","y":"老市场是这座城市有趣的特点。","id":"feature|Ch3 R3"},{"w":"initial","p":"ɪˈnɪʃl","t":"四级","c":"Ch3 R3","u":"Unit2","o":"adj","e":"happening at the beginning; first","z":"最初的；开始的；第一的","x":"My initial reaction was to decline the offer.","y":"我最初的反应是要拒绝这个提议。","id":"initial|Ch3 R3"},{"w":"privilege","p":"ˈprɪvəlɪdʒ","t":"四级","c":"Ch3 R3","u":"Unit2","o":"n","e":"a special right or advantage that a particular person or group of people has","z":"特殊利益；优惠待遇","x":"Education should be a universal right and not a privilege.","y":"教育应当是全民的权利，而非某部分人特别享有的。","id":"privilege|Ch3 R3"},{"w":"pharmacist","p":"ˈfɑ:məsɪst","t":"六级","c":"Ch4 R1","u":"Unit2","o":"n","e":"(North American English also druggist) a person whose job is to prepare medicines and sell or give them to the public in a shop/store or in a hospital","z":"药剂师","x":"We had to wait for the pharmacist to make up her prescription.","y":"我们只得等药剂师给她配好药。","id":"pharmacist|Ch4 R1"},{"w":"labor","p":"ˈleɪbə(r)","t":"学术","c":"Ch4 R1","u":"Unit2","o":"n","e":"work, especially physical work","z":"劳动；（尤指）体力劳动","x":"Division of labour is important in industry today.","y":"劳动分工在今天的行业中很重要。","id":"labor|Ch4 R1"},{"w":"struggle","p":"ˈstrʌgl","t":"四级","c":"Ch4 R1","u":"Unit2","o":"n","e":"a hard fight in which people try to obtain or achieve sth., especially sth. that sb. else does not want them to have","z":"斗争；奋斗；努力","x":"She will not give up her children without a struggle.","y":"她不会轻易放弃自己的孩子","id":"struggle|Ch4 R1"},{"w":"shift","p":"ʃɪft","t":"四级","c":"Ch4 R1","u":"Unit2","o":"v","e":"(of a situation, an opinion, a policy, etc.) to change from one state, position, etc. to another","z":"（情况、意见、政策等）变换；更替；变动","x":"Public attitudes towards marriage have shifted over the past 50 years.","y":"50年来，公众对婚姻的态度已经改变。","id":"shift|Ch4 R1"},{"w":"contribution","p":"ˌkɒntrɪˈbju:ʃn","t":"学术","c":"Ch4 R1","u":"Unit2","o":"n","e":"an action or a service that helps to cause or increase sth.","z":"贡献；促成作用","x":"He made a very positive contribution to the success of the project.","y":"他对项目的成功贡献良多。","id":"contribution|Ch4 R1"},{"w":"period","p":"ˈpɪəriəd","t":"学术","c":"Ch4 R1","u":"Unit2","o":"n","e":"a particular length of time","z":"一段时间；时期","x":"All these changes happened over a period of time.","y":"所有这些变化都是在一段时间内发生的","id":"period|Ch4 R1"},{"w":"approximately","p":"əˈprɒksɪmətli","t":"学术","c":"Ch4 R1","u":"Unit2","o":"adv","e":"used to show that sth. is almost, but not completely, accurate or correct","z":"大概；大约；约莫","x":"The journey took approximately seven hours.","y":"旅程大约花了七个小时。","id":"approximately|Ch4 R1"},{"w":"panel","p":"ˈpænl","t":"四级","c":"Ch4 R1","u":"Unit2","o":"n","e":"A panel is a small group of people who are chosen to do sth., for example to discuss sth. in public or to make a decision.","z":"（进行公开讨论或作决策的）专门小组","x":"He assembled a panel of scholars to advise him.","y":"他组织了一个学者小组为他出谋划策。","id":"panel|Ch4 R1"},{"w":"dynamics","p":"daɪˈnæmɪks","t":"六级","c":"Ch4 R1","u":"Unit2","o":"n","e":"the way in which people or things behave and react to each other in a particular situation","z":"（人或事物）相互作用的方式，动态","x":"The interchange of ideas aids an understanding of family dynamics.","y":"思想的交流有助于理解家庭动态。","id":"dynamics|Ch4 R1"},{"w":"commitment","p":"kəˈmɪtmənt","t":"六级","c":"Ch4 R1","u":"Unit2","o":"n","e":"the willingness to work hard and give your energy and time to a job or an activity","z":"（对工作或某活动）献身，奉献，投入","x":"A career as an actor requires one hundred percent commitment.","y":"干演员这一行需要百分之百的投入。","id":"commitment|Ch4 R1"},{"w":"flexibility","p":"ˌfleksəˈbɪlətɪ","t":"六级","c":"Ch4 R1","u":"Unit2","o":"n","e":"the quality of being able to change or be changed easily according to the situation","z":"灵活可变性","x":"I enjoyed the flexibility of the schedule.","y":"我喜欢这个有弹性的时间安排。","id":"flexibility|Ch4 R1"},{"w":"sole","p":"səʊl","t":"学术","c":"Ch4 R1","u":"Unit2","o":"adj","e":"only; single","z":"仅有的；唯一的","x":"This is the sole means of access to the building.","y":"这是这栋建筑物唯一的入口。","id":"sole|Ch4 R1"},{"w":"provider","p":"prəˈvaɪdə(r)","t":"四级","c":"Ch4 R1","u":"Unit2","o":"n","e":"a person or an organization that supplies sb. with sth. they need or want","z":"供应者；提供者；供养人","x":"The eldest son is the family’s sole provider.","y":"这家的长子是唯一养家糊口的人。","id":"provider|Ch4 R1"},{"w":"micromanage","p":"ˈmaɪkrəʊmænɪdʒ","t":"学术","c":"Ch4 R1","u":"Unit2","o":"v","e":"to control every part of a situation, even small details","z":"细致入微地管理","x":"We wish to empower our people rather than micromanage them.","y":"我们希望赋予员工广泛的权力，而不进行琐碎的管理。","id":"micromanage|Ch4 R1"},{"w":"apparent","p":"əˈpærənt","t":"四级","c":"Ch4 R1","u":"Unit2","o":"adj","e":"easy to see or understand","z":"显而易见的；明白易懂的；显然的","x":"Their devotion was apparent.","y":"他们的忠诚显而易见。","id":"apparent|Ch4 R1"},{"w":"complex","p":"ˈkɒmpleks","t":"学术","c":"Ch4 R2","u":"Unit2","o":"adj","e":"made of many different things or parts that are connected; difficult to understand","z":"复杂的；难懂的；费解的","x":"Today’s complex buildings require close teamwork between the architect and the builders.","y":"如今的建筑结构复杂，需要建筑师和施工人员密切协作。","id":"complex|Ch4 R2"},{"w":"discrimination","p":"dɪˌskrɪmɪˈneɪʃn","t":"学术","c":"Ch4 R2","u":"Unit2","o":"n","e":"the practice of treating sb. or a particular group in society less fairly than others","z":"区别对待；歧视；偏袒","x":"The Sex Discrimination Act has not eliminated discrimination in employment.","y":"《反性别歧视法》并未根除工作场合的歧视。","id":"discrimination|Ch4 R2"},{"w":"in-law","p":"ˈɪn lɔ:","t":"六级","c":"Ch4 R2","u":"Unit2","o":"n","e":"a parent of your husband or wife or a member of his or her family","z":"姻亲；内亲","x":"Interfering in-laws are the prime sources of the blues.","y":"喜欢指手画脚的姻亲最让人头疼。","id":"in-law|Ch4 R2"},{"w":"identity","p":"aɪˈdentəti","t":"六级","c":"Ch4 R2","u":"Unit2","o":"n","e":"who or what sb./sth. is","z":"身份","x":"They are a lost generation in search of an identity.","y":"他们属于迷惘的一代，想要找寻自我。","id":"identity|Ch4 R2"},{"w":"regard","p":"rɪˈgɑ:d","t":"四级","c":"Ch4 R2","u":"Unit2","o":"v","e":"to think about sb./sth. in a particular way","z":"将…认为；把…视为；看待","x":"Capital punishment was regarded as inhuman and immoral.","y":"死刑过去被认为是非人道且不道德的。","id":"regard|Ch4 R2"},{"w":"crush","p":"krʌʃ","t":"四级","c":"Ch4 R2","u":"Unit2","o":"v","e":"to destroy sb.’s confidence or happiness","z":"破坏，毁坏（某人的信心或幸福）","x":"She felt completely crushed by the teacher’s criticism.","y":"老师的批评使她觉得自己全完了。","id":"crush|Ch4 R2"},{"w":"equate","p":"ɪˈkweɪt","t":"学术","c":"Ch4 R2","u":"Unit2","o":"v","e":"to think that sth. is the same as sth. else or is as important","z":"同等看待；使等同","x":"Some parents equate education with exam success.","y":"有些父母认为教育就是考试成绩优秀。","id":"equate|Ch4 R2"},{"w":"identification","p":"aɪˌdentɪfɪˈkeɪʃn","t":"六级","c":"Ch4 R2","u":"Unit2","o":"n","e":"the process of recognizing that sth. exists, or is important","z":"确认；识别","x":"The early identification of children with special educational needs is very important.","y":"早期确认儿童有特殊教育需求很重要。","id":"identification|Ch4 R2"},{"w":"strain","p":"streɪn","t":"四级","c":"Ch4 R2","u":"Unit2","o":"n","e":"severe demand on one’s mental or physical strength, resources, abilities, etc.","z":"对智力﹑体力﹑财力﹑能力等的严格要求；负担；压力","x":"Their marriage is under great strain at the moment.","y":"眼下他们的婚姻关系非常紧张","id":"strain|Ch4 R2"},{"w":"masculinity","p":"ˌmæskjuˈlɪnəti","t":"学术","c":"Ch4 R2","u":"Unit2","o":"n","e":"the quality of being masculine","z":"男子气概；男性；阳性","x":"The old ideas of masculinity do not work for most men.","y":"对于大多数男人来说，关于男子气概的老套观点现在已不再适用了。","id":"masculinity|Ch4 R2"},{"w":"self-reliant","p":"ˌself rɪˈlaɪənt","t":"六级","c":"Ch4 R2","u":"Unit2","o":"adj","e":"able to do or decide things by yourself, rather than depending on other people for help","z":"自立的；自力更生的；自主的","x":"Raising self-reliant children requires parents at times to lead with their heads and not their hearts.","y":"培养有自立能力的孩子要求家长们不时地用理智而不是感情来引导孩子。","id":"self-reliant|Ch4 R2"},{"w":"urge","p":"ɜ:dʒ","t":"四级","c":"Ch4 R2","u":"Unit2","o":"v","e":"to advise or try hard to persuade sb. to do sth.","z":"敦促；催促；力劝","x":"The report urged that all children be taught to swim.","y":"这份报告呼吁给所有的儿童教授游泳。","id":"urge|Ch4 R2"},{"w":"stressful","p":"ˈstresfl","t":"学术","c":"Ch4 R2","u":"Unit2","o":"adj","e":"causing a lot of anxiety and worry","z":"压力重的；紧张的","x":"Parenting can be a stressful business.","y":"为人父母是一件压力很大的事。","id":"stressful|Ch4 R2"},{"w":"depression","p":"dɪˈpreʃn","t":"六级","c":"Ch4 R2","u":"Unit2","o":"n","e":"the state of feeling very sad and without hope","z":"抑郁；沮丧；消沉","x":"Lack of exercise can lead to feelings of depression and exhaustion.","y":"缺乏锻炼会导致抑郁和疲劳。","id":"depression|Ch4 R2"},{"w":"conform to","p":"","t":"六级","c":"Ch4 R2","u":"Unit2","o":"phr.","e":"to behave and think in the same way as most other people in a group or society","z":"顺从，顺应（大多数人或社会）；随潮流","x":"He refused to conform to the local customs.","y":"他拒绝遵从当地的风俗习惯。","id":"conform to|Ch4 R2"},{"w":"humiliation","p":"hju:ˌmɪlɪˈeɪʃn","t":"六级","c":"Ch4 R2","u":"Unit2","o":"n","e":"Humiliation is the embarrassment and shame you feel when someone makes you appear stupid, or when you make a mistake in public.","z":"耻辱；屈辱；丢脸；蒙羞","x":"She faced the humiliation of discussing her husband’s affair.","y":"她面临要谈及丈夫外遇的羞辱。","id":"humiliation|Ch4 R2"},{"w":"life expectancy","p":"","t":"六级","c":"Ch4 R2","u":"Unit2","o":"phr.","e":"average expected length of life","z":"预期寿命","x":"Researchers find that life expectancy actually increased during the years of the Great Depression.","y":"研究人员发现大萧条的这几年里，人的预期寿命其实增长了。","id":"life expectancy|Ch4 R2"},{"w":"consistent","p":"kənˈsɪstənt","t":"四级","c":"Ch4 R2","u":"Unit2","o":"adj","e":"happening in the same way and continuing for a period of time","z":"一贯的；持续的","x":"There has been consistent growth in GSM mobile subscribers.","y":"全球通手机用户持续增长。","id":"consistent|Ch4 R2"},{"w":"persistent","p":"pəˈsɪstənt","t":"学术","c":"Ch4 R2","u":"Unit2","o":"adj","e":"continuing for a long period of time without interruption, or repeating frequently, especially in a way that is annoying and cannot be stopped","z":"连绵的；持续的；反复出现的","x":"Persistent disapproval or criticism can be highly demoralizing.","y":"一再的否定和批评可能会对信心造成严重打击。","id":"persistent|Ch4 R2"},{"w":"longevity","p":"lɒnˈdʒevəti","t":"六级","c":"Ch4 R2","u":"Unit2","o":"n","e":"(formal) long life; the fact of lasting a long time","z":"长寿；持久","x":"We wish you both health and longevity.","y":"我们祝愿您二位健康长寿。","id":"longevity|Ch4 R2"},{"w":"hormone","p":"ˈhɔ:məʊn","t":"六级","c":"Ch4 R2","u":"Unit2","o":"n","e":"a chemical substance produced in the body or in a plant that encourages growth or influences how the cells and tissues function; an artificial substance that has similar effects","z":"荷尔蒙；激素","x":"This hormone interacts closely with other hormones in the body.","y":"这种荷尔蒙与体内其他荷尔蒙紧密地相互作用。","id":"hormone|Ch4 R2"},{"w":"property","p":"ˈprɒpəti","t":"四级","c":"Ch4 R2","u":"Unit2","o":"n","e":"a thing or things that are owned by sb.; a possession or possessions","z":"所有物；财产；财物","x":"Be careful not to damage other people’s property.","y":"小心别损及别人的财物。","id":"property|Ch4 R2"},{"w":"occupation","p":"ˌɒkjuˈpeɪʃn","t":"学术","c":"Ch4 R2","u":"Unit2","o":"n","e":"a job or profession","z":"工作；职业","x":"Please state your name, age and occupationbelow.","y":"请在下面写明姓名、年龄和职业。","id":"occupation|Ch4 R2"},{"w":"underlie","p":"ʌndəˈlaɪ","t":"学术","c":"Ch4 R2","u":"Unit2","o":"v","e":"(formal) to be the basis or cause of sth.","z":"位于…之下；构成…的基础","x":"It is a principle that underlies all the party’s policies.","y":"这是贯穿该党各项政策的一条准则。","id":"underlie|Ch4 R2"},{"w":"ruling","p":"ˈru:lɪŋ","t":"学术","c":"Ch4 R2","u":"Unit2","o":"n","e":"an official decision made by sb. in a position of authority, especially a judge","z":"裁决；裁定；判决","x":"The court will make its ruling on the case next week.","y":"法庭下周将对本案件作出裁决。","id":"ruling|Ch4 R2"},{"w":"sexism","p":"ˈseksɪzəm","t":"学术","c":"Ch4 R3","u":"Unit2","o":"n","e":"discrimination based on gender","z":"性别歧视","x":"There was blatant sexism in the selection of staff.","y":"挑选职员时有明显的性别歧视。","id":"sexism|Ch4 R3"},{"w":"goal","p":"gəʊl","t":"学术","c":"Ch4 R3","u":"Unit2","o":"n","e":"​something that you hope to achieve","z":"目标；目的","x":"Our ultimate goal is the preservation of the environment.","y":"我们的最终目标是保护环境。","id":"goal|Ch4 R3"},{"w":"status","p":"ˈsteɪtəs","t":"学术","c":"Ch4 R3","u":"Unit2","o":"n","e":"​the social or professional position of sb./sth. in relation to others","z":"地位；身份；职位","x":"Women are only asking to be given equal status with men.","y":"妇女只是要求得到和男人平等的地位。","id":"status|Ch4 R3"},{"w":"subordinate","p":"səˈbɔ:dɪnət","t":"六级","c":"Ch4 R3","u":"Unit2","o":"adj","e":"​having less power or authority than sb. else in a group or an organization","z":"隶属的；从属的；下级的","x":"In many societies women are subordinate to men.","y":"在许多社会中，妇女都从属于男人。","id":"subordinate|Ch4 R3"},{"w":"executive","p":"ɪgˈzekjətɪv","t":"四级","c":"Ch4 R3","u":"Unit2","o":"n","e":"​a person who has an important job as a manager of a company or an organization","z":"（公司或机构的）经理，主管领导，管理人员","x":"He is respected as a very aggressive and competitive executive.","y":"他是一位锐意进取、竞争意识很强的主管，颇受尊敬。","id":"executive|Ch4 R3"},{"w":"respondent","p":"rɪˈspɒndənt","t":"学术","c":"Ch4 R3","u":"Unit2","o":"n","e":"​a person who answers questions, especially in a survey","z":"回答问题的人；（尤指）调查对象","x":"60% of the respondents agreed with the suggestion.","y":"回复调查的人中60%同意这项建议。","id":"respondent|Ch4 R3"},{"w":"prohibit","p":"prəˈhɪbɪt","t":"四级","c":"Ch4 R3","u":"Unit2","o":"v","e":"​to stop sth. from being done","z":"（尤指以法令）禁止","x":"Local zoning laws prohibit building near property lines.","y":"本地的规划法禁止在地产边界附近进行建筑施工。","id":"prohibit|Ch4 R3"},{"w":"disparity","p":"dɪˈspærəti","t":"学术","c":"Ch4 R3","u":"Unit2","o":"n","e":"​(formal) a difference, especially one connected with unfair treatment","z":"（尤指因不公正对待引起的）不同，不等，差异","x":"The disparity in incomes among different professions was small.","y":"各职业收入的差距比较小。","id":"disparity|Ch4 R3"},{"w":"rear","p":"rɪə(r)","t":"四级","c":"Ch4 R3","u":"Unit2","o":"v","e":"​to care for young children or animals until they are fully grown","z":"抚养；养育；培养","x":"She reared a family of five on her own.","y":"她一个人养活一家五口。","id":"rear|Ch4 R3"},{"w":"compensation","p":"ˌkɒmpenˈseɪʃn","t":"学术","c":"Ch4 R3","u":"Unit2","o":"n","e":"​something, especially money, that sb. gives you because they have hurt you, or damaged sth. that you own; the act of giving this to sb.","z":"赔偿物；补偿金；赔偿","x":"He received one year’s salary as compensation for loss of office.","y":"他得到一年的工资作为失业补偿金。","id":"compensation|Ch4 R3"},{"w":"forum","p":"ˈfɔ:rəm","t":"六级","c":"Ch4 R3","u":"Unit2","o":"n","e":"​a place where people can exchange opinions and ideas on a particular issue; a meeting organized for this purpose","z":"公共讨论场所；论坛；讨论会","x":"Television is now an important forum for political debate.","y":"电视已成了政治辩论的重要擂台。","id":"forum|Ch4 R3"},{"w":"cooperation","p":"kəʊˌɒpəˈreɪʃn","t":"学术","c":"Ch4 R3","u":"Unit2","o":"n","e":"​the fact of doing sth. together or of working together towards a shared aim","z":"合作；协作","x":"We would like to see closer cooperation between parents and schools.","y":"我们希望学生家长和学校有更加紧密的合作。","id":"cooperation|Ch4 R3"},{"w":"predict","p":"prɪˈdɪkt","t":"四级","c":"Ch4 R3","u":"Unit2","o":"v","e":"​to say that sth. will happen in the future","z":"预言；预告；预报","x":"Nobody could predict the outcome.","y":"谁也无法预料结果如何。","id":"predict|Ch4 R3"},{"w":"attribute","p":"əˈtrɪbju:t","t":"四级","c":"Ch4 R3","u":"Unit2","o":"n","e":"​a quality or feature of sb./sth.","z":"属性；性质；特征","x":"Patience is one of the most important attributes in a teacher.","y":"耐心是教师最重要的品质之一。","id":"attribute|Ch4 R3"}];
+
+/* ---------- 存储 ---------- */
+const KEY = 'vocab.sprint.u12.v1';
+const DEF = { cards:{}, settings:{shuffle:false, skipL4:false, autoSpeak:false}, last:null };
+let DB = load();
+
+function load(){
+  try{
+    const raw = localStorage.getItem(KEY);
+    if(!raw) return JSON.parse(JSON.stringify(DEF));
+    const o = JSON.parse(raw);
+    return Object.assign(JSON.parse(JSON.stringify(DEF)), o, {settings:Object.assign({},DEF.settings,o.settings||{})});
+  }catch(e){ return JSON.parse(JSON.stringify(DEF)); }
+}
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(DB)); }catch(e){} }
+
+function cardState(id){ return DB.cards[id] || null; }
+function isMastered(id){ const c=DB.cards[id]; return !!c && c.s>=1; }   // 答对一次即算拿下（冲刺：先过一遍筛出不会的）
+
+/* ---------- 词级样式 ---------- */
+const TAGCLS = {'四级':'l4','六级':'l6','学术':'ac'};
+
+/* ---------- 状态 ---------- */
+const S = { view:'home', deck:[], i:0, stage:'front', judged:null, locked:false, right:0, wrong:0, t0:0, wrongList:[], label:'' };
+
+const $ = id => document.getElementById(id);
+const show = v => {
+  S.view=v;
+  $('vHome').hidden = v!=='home';
+  $('vStudy').hidden = v!=='study';
+  $('vDone').hidden = v!=='done';
+};
+
+/* ---------- 首页 ---------- */
+function chapters(){
+  const seen=[];
+  DATA.forEach(d=>{ if(!seen.includes(d.c)) seen.push(d.c); });
+  return seen;
+}
+
+function renderHome(){
+  const total = DATA.length;
+  const mastered = DATA.filter(d=>isMastered(d.id)).length;
+  const touched = DATA.filter(d=>cardState(d.id)).length;
+  const pct = Math.round(mastered/total*100);
+
+  $('homeSub').textContent = `读写教程 · Unit 1–2 · ${total} 词 · ${chapters().length} 篇课文`;
+
+  const C = 2*Math.PI*43;
+  $('ringFg').style.strokeDashoffset = C*(1-mastered/total);
+  $('ringFg').style.strokeLinecap = mastered>0 ? 'round' : 'butt';
+  $('ringNum').textContent = pct+'%';
+
+  if(mastered===0 && touched===0){
+    $('heroBig').textContent = '还没开始';
+    $('heroSm').innerHTML = `共 <b>${total}</b> 个词，分 <b>${chapters().length}</b> 篇课文<br>一轮约 12 分钟`;
+  }else{
+    $('heroBig').textContent = `已掌握 ${mastered} / ${total}`;
+    const left = total - mastered;
+    $('heroSm').innerHTML = left>0
+      ? `还有 <b>${left}</b> 个没拿下${DB.last?` · 上次 ${DB.last}`:''}`
+      : `全部拿下 🎉`;
+  }
+
+  const all = DATA.filter(d=>!(DB.settings.skipL4 && d.t==='四级'));
+  $('btnAll').innerHTML = `开始冲刺 <span class="n">· ${all.length} 词</span>`;
+  $('btnAll').disabled = all.length===0;
+
+  const weak = DATA.filter(d=>!isMastered(d.id) && !(DB.settings.skipL4 && d.t==='四级'));
+  const nothingYet = DATA.every(d=>!cardState(d.id));
+  if(nothingYet){
+    $('btnWeak').textContent = '先刷一轮，再来筛错词';
+    $('btnWeak').disabled = true;
+  }else{
+    $('btnWeak').innerHTML = weak.length ? `只刷没掌握的 <span class="n">· ${weak.length} 词</span>` : '全部已掌握';
+    $('btnWeak').disabled = weak.length===0;
+  }
+
+  // 关卡网格
+  const g = $('grid'); g.innerHTML='';
+  chapters().forEach(ch=>{
+    const items = DATA.filter(d=>d.c===ch);
+    const m = items.filter(d=>isMastered(d.id)).length;
+    const [c,r] = ch.replace('Ch','').split(' R');
+    const el = document.createElement('button');
+    el.className = 'cell' + (m===items.length?' done':'');
+    el.innerHTML = `<div class="cn">Ch${c}<span class="sep">·</span>R${r}</div>
+                    <div class="pg">${m}/${items.length}</div>
+                    <div class="bar" style="width:${m/items.length*100}%"></div>`;
+    el.onclick = ()=>startChapter(ch);
+    g.appendChild(el);
+  });
+
+  $('l4sub').textContent = `${DATA.filter(d=>d.t==='四级').length} 个，多半已经认识`;
+  $('swShuffle').classList.toggle('on', DB.settings.shuffle);
+  $('swSkipL4').classList.toggle('on', DB.settings.skipL4);
+  $('swSpeak').classList.toggle('on', DB.settings.autoSpeak);
+}
+
+/* ---------- 组卷 ---------- */
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+
+function buildDeck(list){
+  let arr = list.slice();
+  if(DB.settings.skipL4) arr = arr.filter(d=>d.t!=='四级');
+  if(DB.settings.shuffle) shuffle(arr);
+  return arr;
+}
+
+function startDeck(list, label){
+  const deck = buildDeck(list);
+  if(!deck.length){ return; }
+  S.deck = deck; S.i=0; S.stage='front'; S.judged=null; S.right=0; S.wrong=0; S.wrongList=[]; S.t0=Date.now(); S.label=label;
+  show('study');
+  renderCard();
+}
+
+function startAll(){ startDeck(DATA, '全部'); }
+function startWeak(){ startDeck(DATA.filter(d=>!isMastered(d.id)), '没掌握的'); }
+function startChapter(ch){ startDeck(DATA.filter(d=>d.c===ch), ch); }
+
+/* ---------- 学习页 ---------- */
+function renderCard(){
+  const d = S.deck[S.i];
+  if(!d){ finish(); return; }
+  S.stage='front'; S.judged=null;
+
+  const el = $('card');
+  el.querySelectorAll('.badge-ok,.badge-no').forEach(n=>n.remove());
+
+  $('faceFront').hidden=false; $('faceBack').hidden=true;
+  $('fChip').className = 'chip '+(TAGCLS[d.t]||'l4');
+  $('fChip').textContent = d.t;
+  $('fWord').textContent = d.w;
+  $('fIpa').textContent = d.p ? '/'+d.p+'/' : '';
+  $('tapHint').textContent = '轻点卡片 · 看释义';
+
+  $('bWord').textContent = d.w;
+  $('bIpa').textContent = d.p ? '/'+d.p+'/' : '';
+  $('bPos').textContent = d.o || '';
+  $('bZh').textContent = d.z;
+  $('bEn').textContent = d.e;
+  if(d.x){ $('bEx').hidden=false; $('bExEn').textContent=d.x; $('bExZh').textContent=d.y||''; }
+  else $('bEx').hidden=true;
+
+  $('btnNo').textContent = '不认识'; $('btnYes').textContent = '认识';
+  $('btnNo').className = 'btn btn-no'; $('btnYes').className = 'btn btn-yes';
+
+  updateBar();
+  if(DB.settings.autoSpeak) speak(d.w);
+}
+
+function updateBar(){
+  const n = S.deck.length;
+  $('pbar').style.width = (S.i/n*100)+'%';
+  $('pbar').classList.toggle('on', S.i>0);
+  $('cnt').innerHTML = `<b>${Math.min(S.i+1,n)}</b>/${n} &nbsp; ✓${S.right} ✗${S.wrong}`;
+}
+
+function flip(){
+  if(S.stage!=='front') return;
+  S.stage='back';
+  $('faceFront').hidden=true;
+  $('faceBack').hidden=false;
+  // 已判过（答错自动翻面）时按钮变成"继续"
+  if(S.judged){
+    $('btnNo').textContent='继续'; $('btnNo').className='btn btn-next';
+    $('btnYes').textContent='继续'; $('btnYes').className='btn btn-next';
+  }
+}
+
+function judge(v){
+  const d = S.deck[S.i];
+  if(!d) return;
+
+  if(S.judged){
+    // 已经判过（答错看答案中），任意按钮 = 下一张
+    next(); return;
+  }
+
+  S.judged = v;
+  const rec = DB.cards[d.id] || {s:0,w:0};
+  if(v==='right'){
+    rec.s = (rec.s||0)+1;
+    rec.w = rec.w||0;
+    DB.cards[d.id]=rec;
+    S.right++;
+    save();
+    next();   // 答对立即切，零等待
+  }else{
+    rec.s = 0;
+    rec.w = (rec.w||0)+1;
+    DB.cards[d.id]=rec;
+    S.wrong++;
+    S.wrongList.push(d);
+    flash('no');
+    save();
+    flip(); // 强制看答案
+  }
+  updateBar();
+}
+
+function flash(kind){
+  const el=document.createElement('div');
+  el.className = kind==='ok'?'badge-ok':'badge-no';
+  $('card').appendChild(el);
+  setTimeout(()=>el.remove(), 400);
+}
+
+function next(){
+  S.i++;
+  if(S.i >= S.deck.length){ finish(); return; }
+  renderCard();
+}
+
+function finish(){
+  const n = S.deck.length;
+  const secs = Math.round((Date.now()-S.t0)/1000);
+  const pct = n? Math.round(S.right/n*100) : 0;
+
+  const C = 2*Math.PI*43;
+  $('doneRing').style.strokeDashoffset = C*(1-pct/100);
+  $('donePct').textContent = pct+'%';
+
+  const mm = secs>=60 ? `${Math.floor(secs/60)} 分 ${secs%60} 秒` : `${secs} 秒`;
+  $('doneTitle').textContent = pct>=90 ? '这轮很稳' : pct>=70 ? '差不多了' : '还得再过一遍';
+  $('doneSub').innerHTML = `${S.label} · 共 <b>${n}</b> 词 · 认识 <b>${S.right}</b> · 用时 ${mm}`;
+
+  // 去重（同一词可能错多次）
+  const seen=new Set(); const weak=[];
+  S.wrongList.forEach(d=>{ if(!seen.has(d.id)){ seen.add(d.id); weak.push(d); } });
+
+  $('weakTitle').textContent = weak.length? '没拿下的词' : '这轮全对';
+  $('weakCount').textContent = weak.length? `${weak.length} 个` : '';
+  const list=$('weakList'); list.innerHTML='';
+  if(!weak.length){
+    list.innerHTML = '<div class="weak-empty">没有错词，可以放心睡觉了 🌙</div>';
+  }else{
+    weak.forEach(d=>{
+      const el=document.createElement('div');
+      el.className='wi';
+      el.innerHTML = `<span class="ww">${esc(d.w)}</span><span class="wz">${esc(d.z)}</span>`;
+      el.onclick = ()=>speak(d.w);
+      list.appendChild(el);
+    });
+  }
+
+  $('btnAgain').innerHTML = weak.length? `再刷这 ${weak.length} 个` : '再来一轮';
+  $('btnAgain').disabled = false;
+  $('btnAgain').onclick = ()=>{ weak.length? startDeck(weak, '错词') : startDeck(DATA.filter(d=>d.c===S.deck[0]?.c), '重刷'); };
+
+  DB.last = new Date().toLocaleString('zh-CN',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'});
+  save();
+  show('done');
+}
+
+function esc(s){ return String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+/* ---------- 语音 ---------- */
+function speak(w){
+  if(!window.speechSynthesis) return;
+  try{
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(w);
+    u.lang='en-US'; u.rate=.92;
+    speechSynthesis.speak(u);
+  }catch(e){}
+}
+
+/* ---------- 交互绑定 ---------- */
+$('btnAll').onclick = startAll;
+$('btnWeak').onclick = startWeak;
+$('btnQuit').onclick = ()=>{ show('home'); renderHome(); };
+$('btnHome').onclick = ()=>{ show('home'); renderHome(); };
+
+$('card').onclick = e=>{
+  if(e.target.closest('.spk')) return;
+  if(S.stage==='front') flip();
+};
+$('btnSpk').onclick = e=>{ e.stopPropagation(); const d=S.deck[S.i]; if(d) speak(d.w); };
+$('btnNo').onclick = e=>{ e.stopPropagation(); judge('wrong'); };
+$('btnYes').onclick = e=>{ e.stopPropagation(); judge('right'); };
+
+document.addEventListener('keydown', e=>{
+  if(S.view!=='study') return;
+  if(e.key==='ArrowRight' || e.key==='2' || e.key==='d'){ e.preventDefault(); judge('right'); }
+  else if(e.key==='ArrowLeft' || e.key==='1' || e.key==='a'){ e.preventDefault(); judge('wrong'); }
+  else if(e.key===' ' || e.key==='Enter'){ e.preventDefault(); if(S.stage==='front') flip(); else next(); }
+  else if(e.key==='Escape'){ show('home'); renderHome(); }
+});
+
+/* 触摸滑动 */
+let tx=0, ty=0, tt=0;
+$('card').addEventListener('touchstart', e=>{ const t=e.changedTouches[0]; tx=t.clientX; ty=t.clientY; tt=Date.now(); }, {passive:true});
+$('card').addEventListener('touchend', e=>{
+  const t=e.changedTouches[0];
+  const dx=t.clientX-tx, dy=t.clientY-ty, dt=Date.now()-tt;
+  if(dt<600 && Math.abs(dx)>60 && Math.abs(dx)>Math.abs(dy)*1.6){
+    if(dx>0) judge('right'); else judge('wrong');
+  }
+}, {passive:true});
+
+/* 设置 */
+$('btnGear').onclick = ()=>{ $('mask').hidden=false; };
+$('mask').onclick = e=>{ if(e.target===$('mask')) $('mask').hidden=true; };
+$('swShuffle').onclick = e=>{ e.stopPropagation(); DB.settings.shuffle=!DB.settings.shuffle; save(); renderHome(); };
+$('swSkipL4').onclick = e=>{ e.stopPropagation(); DB.settings.skipL4=!DB.settings.skipL4; save(); renderHome(); };
+$('swSpeak').onclick = e=>{ e.stopPropagation(); DB.settings.autoSpeak=!DB.settings.autoSpeak; save(); renderHome(); };
+$('btnReset').onclick = ()=>{
+  if(confirm('清空全部学习进度？此操作不可撤销。')){
+    DB = JSON.parse(JSON.stringify(DEF));
+    save(); $('mask').hidden=true; renderHome();
+  }
+};
+
+/* 启动 */
+renderHome();
+</script>
+</body>
+</html>
