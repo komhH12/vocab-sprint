@@ -127,7 +127,7 @@ body::before{
 .card{flex:1;min-height:0;margin:16px 0 14px;border-radius:22px;background:var(--card);border:.5px solid var(--stroke);box-shadow:var(--shadow),inset 0 .5px 0 var(--inset);backdrop-filter:blur(24px);padding:26px 24px;display:flex;cursor:pointer;position:relative;overflow:hidden}
 .face{width:100%;display:flex;flex-direction:column;animation:fadeUp .18s ease both;min-height:0}
 .face.front{align-items:center;justify-content:center;text-align:center;gap:0}
-.face.back{overflow-y:auto;padding-right:2px}
+.face.back{overflow-y:auto;padding-right:2px;padding-top:16px}
 .face[hidden]{display:none!important}
 
 .chip{position:absolute;top:16px;right:18px;padding:3px 9px;border-radius:999px;font-size:11px;font-weight:600;letter-spacing:.02em}
@@ -183,6 +183,39 @@ body::before{
 .wi .wz{font-size:12.5px;color:var(--fg2);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .weak-empty{padding:30px 14px;text-align:center;font-size:13px;color:var(--fg2)}
 
+
+/* ===== 续传 / 撤销 / 课文标签 ===== */
+.btn-resume{height:54px;background:rgba(0,122,255,.11);color:var(--accent);font-size:15.5px;box-shadow:inset 0 0 0 1.5px rgba(0,122,255,.22)}
+.btn-resume:hover{background:rgba(0,122,255,.17)}
+.btn-resume .n{font-weight:500;opacity:.8;font-size:13.5px}
+
+.chap{position:absolute;top:17px;left:19px;font-size:11.5px;font-weight:600;color:var(--fg3);letter-spacing:.03em}
+
+.ipa-row{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:13px}
+.ipa-row .ipa{margin-top:0}
+.spk-mini{width:26px;height:26px;border-radius:50%;border:none;background:transparent;color:var(--fg3);cursor:pointer;display:flex;align-items:center;justify-content:center;flex:none;transition:background .15s,color .15s}
+.spk-mini:hover{background:var(--well);color:var(--fg2)}
+.spk-mini svg{width:13px;height:13px}
+
+.btn-undo{width:56px;height:56px;flex:none;border-radius:14px;border:none;background:var(--well);color:var(--fg2);font-size:20px;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;transition:background .15s,opacity .15s}
+.btn-undo:hover{background:var(--well2)}
+.btn-undo:disabled{opacity:.35;cursor:default}
+.btn[hidden],.btn-undo[hidden]{display:none!important}
+
+/* toast */
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translate(-50%,10px);background:rgba(30,30,32,.92);color:#fff;font-size:13px;font-weight:500;padding:9px 16px;border-radius:999px;z-index:40;opacity:0;transition:opacity .2s,transform .2s;pointer-events:none;backdrop-filter:blur(10px)}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* 存储警告条 */
+.warnbar{display:none;margin:12px 0 0;padding:10px 13px;border-radius:12px;background:rgba(255,149,0,.13);color:#b35c00;font-size:12.5px;line-height:1.5}
+.warnbar.show{display:block}
+@media (prefers-color-scheme:dark){ .warnbar{color:#ffb340} }
+
+/* 深色模式下续传按钮 */
+@media (prefers-color-scheme:dark){
+  .btn-resume{background:rgba(10,132,255,.20);box-shadow:inset 0 0 0 1.5px rgba(10,132,255,.34)}
+}
+
 /* 设置面板 */
 .mask{position:fixed;inset:0;background:rgba(0,0,0,.28);z-index:20;display:flex;align-items:flex-end;justify-content:center;animation:fadeIn .16s}
 .mask[hidden]{display:none!important}
@@ -215,6 +248,8 @@ body::before{
       <button class="icon" id="btnGear" title="设置" aria-label="设置">⚙</button>
     </div>
 
+    <div class="warnbar" id="warnbar"></div>
+
     <div class="hero">
       <div class="ring">
         <svg viewBox="0 0 100 100">
@@ -230,6 +265,7 @@ body::before{
     </div>
 
     <div class="cta">
+      <button class="btn btn-resume" id="btnResume" hidden></button>
       <button class="btn btn-primary" id="btnAll"></button>
       <button class="btn btn-ghost" id="btnWeak"></button>
     </div>
@@ -244,6 +280,7 @@ body::before{
       <span><span class="kbd">←</span>不认识</span>
       <span><span class="kbd">→</span>认识</span>
       <span><span class="kbd">空格</span>翻面</span>
+      <span><span class="kbd">↑</span>退回上一个</span>
     </div>
   </section>
 
@@ -257,12 +294,19 @@ body::before{
 
     <div class="card" id="card">
       <div class="face front" id="faceFront">
+        <span class="chap" id="fChap"></span>
         <span class="chip" id="fChip"></span>
         <div class="word" id="fWord"></div>
-        <div class="ipa" id="fIpa"></div>
+        <div class="ipa-row">
+          <span class="ipa" id="fIpa"></span>
+          <button class="spk-mini" id="btnSpkFront" aria-label="朗读">
+            <svg viewBox="0 0 16 16" fill="none"><path d="M8.6 3.1v9.8L5.2 9.9H3a.9.9 0 0 1-.9-.9V7a.9.9 0 0 1 .9-.9h2.2L8.6 3.1z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M11.2 6a3.2 3.2 0 0 1 0 4M13 4.4a5.4 5.4 0 0 1 0 7.2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          </button>
+        </div>
         <div class="tap-hint" id="tapHint">轻点卡片 · 看释义</div>
       </div>
       <div class="face back" id="faceBack" hidden>
+        <span class="chap" id="bChap"></span>
         <button class="spk" id="btnSpk" aria-label="朗读">
           <svg viewBox="0 0 16 16" fill="none"><path d="M8.6 3.1v9.8L5.2 9.9H3a.9.9 0 0 1-.9-.9V7a.9.9 0 0 1 .9-.9h2.2L8.6 3.1z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M11.2 6a3.2 3.2 0 0 1 0 4M13 4.4a5.4 5.4 0 0 1 0 7.2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
         </button>
@@ -283,6 +327,7 @@ body::before{
     </div>
 
     <div class="acts">
+      <button class="btn-undo" id="btnUndo" aria-label="退回上一个" title="退回上一个（↑）">↶</button>
       <button class="btn btn-no" id="btnNo">不认识</button>
       <button class="btn btn-yes" id="btnYes">认识</button>
     </div>
@@ -340,8 +385,22 @@ const DATA=[{"w":"institution","p":"ˌɪnstɪˈtju:ʃn","t":"学术","c":"Ch1 R1
 
 /* ---------- 存储 ---------- */
 const KEY = 'vocab.sprint.u12.v1';
-const DEF = { cards:{}, settings:{shuffle:false, skipL4:false, autoSpeak:false}, last:null };
+const DEF = { cards:{}, settings:{shuffle:false, skipL4:false, autoSpeak:false}, last:null, session:null };
 let DB = load();
+
+/* 存储可用性：隐私模式 / 微信文件预览里 localStorage 会被禁，要明确告诉用户 */
+let STORAGE_OK = true;
+try{ localStorage.setItem('__probe','1'); localStorage.removeItem('__probe'); }catch(e){ STORAGE_OK = false; }
+
+let toastTimer = null;
+function toast(msg){
+  let t = document.getElementById('toast');
+  if(!t){ t = document.createElement('div'); t.id='toast'; t.className='toast'; document.body.appendChild(t); }
+  t.textContent = msg;
+  requestAnimationFrame(()=>t.classList.add('show'));
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'), 1600);
+}
 
 function load(){
   try{
@@ -360,7 +419,7 @@ function isMastered(id){ const c=DB.cards[id]; return !!c && c.s>=1; }   // 答�
 const TAGCLS = {'四级':'l4','六级':'l6','学术':'ac'};
 
 /* ---------- 状态 ---------- */
-const S = { view:'home', deck:[], i:0, stage:'front', judged:null, locked:false, right:0, wrong:0, t0:0, wrongList:[], label:'' };
+const S = { view:'home', deck:[], i:0, stage:'front', judged:null, right:0, wrong:0, t0:0, wrongList:[], label:'', history:[] };
 
 const $ = id => document.getElementById(id);
 const show = v => {
@@ -399,6 +458,22 @@ function renderHome(){
     $('heroSm').innerHTML = left>0
       ? `还有 <b>${left}</b> 个没拿下${DB.last?` · 上次 ${DB.last}`:''}`
       : `全部拿下 🎉`;
+  }
+
+  // 存储警告
+  const wb = $('warnbar');
+  wb.classList.toggle('show', !STORAGE_OK);
+  if(!STORAGE_OK){
+    wb.textContent = '当前打开方式不允许本地存储，进度不会被保存。请在 Safari 里直接打开网址（微信里预览文件会这样）。';
+  }
+
+  // 继续上次
+  const ss = DB.session;
+  if(ss && ss.ids && ss.i < ss.ids.length){
+    $('btnResume').hidden = false;
+    $('btnResume').innerHTML = `继续上次 <span class="n">· ${esc(ss.label)} ${ss.i}/${ss.ids.length}</span>`;
+  }else{
+    $('btnResume').hidden = true;
   }
 
   const all = DATA.filter(d=>!(DB.settings.skipL4 && d.t==='四级'));
@@ -448,10 +523,47 @@ function buildDeck(list){
 
 function startDeck(list, label){
   const deck = buildDeck(list);
-  if(!deck.length){ return; }
-  S.deck = deck; S.i=0; S.stage='front'; S.judged=null; S.right=0; S.wrong=0; S.wrongList=[]; S.t0=Date.now(); S.label=label;
+  if(!deck.length){ toast('没有可刷的词'); return; }
+  S.deck = deck; S.i=0; S.stage='front'; S.judged=null; S.right=0; S.wrong=0;
+  S.wrongList=[]; S.history=[]; S.t0=Date.now(); S.label=label;
   show('study');
   renderCard();
+  persistSession();
+}
+
+/* ---------- 断点续传 ---------- */
+function persistSession(){
+  if(S.view!=='study' || !S.deck.length) return;
+  DB.session = {
+    label: S.label,
+    ids: S.deck.map(d=>d.id),
+    i: S.i,
+    right: S.right,
+    wrong: S.wrong,
+    wrongIds: S.wrongList.map(d=>d.id),
+    t0: S.t0,
+    ts: Date.now()
+  };
+  save();
+}
+function clearSession(){ DB.session = null; save(); }
+
+function resumeSession(){
+  const ss = DB.session;
+  if(!ss || !ss.ids) return;
+  const deck = ss.ids.map(id=>DATA.find(d=>d.id===id)).filter(Boolean);
+  if(!deck.length){ clearSession(); renderHome(); return; }
+  S.deck = deck;
+  S.i = Math.max(0, Math.min(ss.i||0, deck.length));
+  S.right = ss.right||0;
+  S.wrong = ss.wrong||0;
+  S.wrongList = (ss.wrongIds||[]).map(id=>DATA.find(d=>d.id===id)).filter(Boolean);
+  S.t0 = Date.now();           // 用时按本次重新计
+  S.label = ss.label || '上次';
+  S.history = [];
+  S.stage='front'; S.judged=null;
+  show('study');
+  if(S.i >= deck.length) finish(); else renderCard();
 }
 
 function startAll(){ startDeck(DATA, '全部'); }
@@ -468,10 +580,13 @@ function renderCard(){
   el.querySelectorAll('.badge-ok,.badge-no').forEach(n=>n.remove());
 
   $('faceFront').hidden=false; $('faceBack').hidden=true;
+  $('fChap').textContent = d.c;
+  $('bChap').textContent = d.c;
   $('fChip').className = 'chip '+(TAGCLS[d.t]||'l4');
   $('fChip').textContent = d.t;
   $('fWord').textContent = d.w;
   $('fIpa').textContent = d.p ? '/'+d.p+'/' : '';
+  $('btnSpkFront').hidden = false;
   $('tapHint').textContent = '轻点卡片 · 看释义';
 
   $('bWord').textContent = d.w;
@@ -482,8 +597,8 @@ function renderCard(){
   if(d.x){ $('bEx').hidden=false; $('bExEn').textContent=d.x; $('bExZh').textContent=d.y||''; }
   else $('bEx').hidden=true;
 
-  $('btnNo').textContent = '不认识'; $('btnYes').textContent = '认识';
-  $('btnNo').className = 'btn btn-no'; $('btnYes').className = 'btn btn-yes';
+  setActions('ask');
+  $('btnUndo').disabled = !S.history.length;
 
   updateBar();
   if(DB.settings.autoSpeak) speak(d.w);
@@ -493,7 +608,44 @@ function updateBar(){
   const n = S.deck.length;
   $('pbar').style.width = (S.i/n*100)+'%';
   $('pbar').classList.toggle('on', S.i>0);
-  $('cnt').innerHTML = `<b>${Math.min(S.i+1,n)}</b>/${n} &nbsp; ✓${S.right} ✗${S.wrong}`;
+
+  // 剩余时间预估：按本次已刷速度算
+  let eta = '';
+  const elapsed = (Date.now() - S.t0) / 1000;
+  if(S.i >= 5 && elapsed > 4){
+    const left = (n - S.i) * (elapsed / S.i);
+    if(left >= 60) eta = ' · 约 ' + Math.round(left/60) + ' 分';
+    else if(left >= 15) eta = ' · 约 ' + Math.round(left) + ' 秒';
+  }
+  $('cnt').innerHTML = `<b>${Math.min(S.i+1,n)}</b>/${n}${eta}`;
+}
+
+/* 底部按钮形态：ask = 不认识/认识；judged = 单个"继续"；revealed = 已翻面未判 */
+function setActions(mode){
+  const no = $('btnNo'), yes = $('btnYes'), undo = $('btnUndo');
+  if(mode === 'judged'){
+    no.hidden = true;
+    yes.hidden = false;
+    yes.textContent = '继续 →';
+    yes.className = 'btn btn-next';
+    undo.hidden = false;
+  }else if(mode === 'revealed'){
+    no.hidden = false;
+    no.textContent = '不认识';
+    no.className = 'btn btn-no';
+    yes.hidden = false;
+    yes.textContent = '认识';
+    yes.className = 'btn btn-yes';
+    undo.hidden = false;
+  }else{
+    no.hidden = false;
+    no.textContent = '不认识';
+    no.className = 'btn btn-no';
+    yes.hidden = false;
+    yes.textContent = '认识';
+    yes.className = 'btn btn-yes';
+    undo.hidden = false;
+  }
 }
 
 function flip(){
@@ -503,8 +655,7 @@ function flip(){
   $('faceBack').hidden=false;
   // 已判过（答错自动翻面）时按钮变成"继续"
   if(S.judged){
-    $('btnNo').textContent='继续'; $('btnNo').className='btn btn-next';
-    $('btnYes').textContent='继续'; $('btnYes').className='btn btn-next';
+    setActions('judged');
   }
 }
 
@@ -517,6 +668,9 @@ function judge(v){
     next(); return;
   }
 
+  // 撤销点必须在改 DB 之前记
+  S.history.push({ i:S.i, id:d.id, prev: DB.cards[d.id] ? Object.assign({}, DB.cards[d.id]) : null, kind:v });
+
   S.judged = v;
   const rec = DB.cards[d.id] || {s:0,w:0};
   if(v==='right'){
@@ -526,17 +680,36 @@ function judge(v){
     S.right++;
     save();
     next();   // 答对立即切，零等待
+    persistSession();
   }else{
     rec.s = 0;
     rec.w = (rec.w||0)+1;
     DB.cards[d.id]=rec;
     S.wrong++;
     S.wrongList.push(d);
-    flash('no');
     save();
     flip(); // 强制看答案
+    $('btnUndo').disabled = false;
+    updateBar();
+    persistSession();
   }
-  updateBar();
+}
+
+/* 退回上一个：撤销最后一次判定并回到那张卡 */
+function undo(){
+  if(!S.history.length) return;
+  const h = S.history.pop();
+  if(h.prev) DB.cards[h.id] = h.prev; else delete DB.cards[h.id];
+
+  if(h.kind === 'right') S.right = Math.max(0, S.right-1);
+  else { S.wrong = Math.max(0, S.wrong-1); S.wrongList.pop(); }
+
+  S.i = h.i;
+  S.stage = 'front'; S.judged = null;
+  save();
+  if(S.view !== 'study') show('study');
+  renderCard();
+  persistSession();
 }
 
 function flash(kind){
@@ -550,6 +723,7 @@ function next(){
   S.i++;
   if(S.i >= S.deck.length){ finish(); return; }
   renderCard();
+  persistSession();
 }
 
 function finish(){
@@ -589,7 +763,7 @@ function finish(){
   $('btnAgain').onclick = ()=>{ weak.length? startDeck(weak, '错词') : startDeck(DATA.filter(d=>d.c===S.deck[0]?.c), '重刷'); };
 
   DB.last = new Date().toLocaleString('zh-CN',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'});
-  save();
+  clearSession();
   show('done');
 }
 
@@ -609,23 +783,33 @@ function speak(w){
 /* ---------- 交互绑定 ---------- */
 $('btnAll').onclick = startAll;
 $('btnWeak').onclick = startWeak;
-$('btnQuit').onclick = ()=>{ show('home'); renderHome(); };
-$('btnHome').onclick = ()=>{ show('home'); renderHome(); };
+$('btnResume').onclick = resumeSession;
+
+function leaveStudy(){
+  persistSession();
+  if(DB.session && DB.session.i < DB.session.ids.length) toast('进度已保存，可随时继续');
+  show('home'); renderHome();
+}
+$('btnQuit').onclick = leaveStudy;
+$('btnHome').onclick = leaveStudy;
 
 $('card').onclick = e=>{
-  if(e.target.closest('.spk')) return;
+  if(e.target.closest('.spk') || e.target.closest('.spk-mini')) return;
   if(S.stage==='front') flip();
 };
 $('btnSpk').onclick = e=>{ e.stopPropagation(); const d=S.deck[S.i]; if(d) speak(d.w); };
+$('btnSpkFront').onclick = e=>{ e.stopPropagation(); const d=S.deck[S.i]; if(d) speak(d.w); };
 $('btnNo').onclick = e=>{ e.stopPropagation(); judge('wrong'); };
 $('btnYes').onclick = e=>{ e.stopPropagation(); judge('right'); };
+$('btnUndo').onclick = e=>{ e.stopPropagation(); undo(); };
 
 document.addEventListener('keydown', e=>{
   if(S.view!=='study') return;
   if(e.key==='ArrowRight' || e.key==='2' || e.key==='d'){ e.preventDefault(); judge('right'); }
   else if(e.key==='ArrowLeft' || e.key==='1' || e.key==='a'){ e.preventDefault(); judge('wrong'); }
   else if(e.key===' ' || e.key==='Enter'){ e.preventDefault(); if(S.stage==='front') flip(); else next(); }
-  else if(e.key==='Escape'){ show('home'); renderHome(); }
+  else if(e.key==='ArrowUp' || e.key==='Backspace' || e.key==='z'){ e.preventDefault(); undo(); }
+  else if(e.key==='Escape'){ leaveStudy(); }
 });
 
 /* 触摸滑动 */
@@ -649,6 +833,7 @@ $('btnReset').onclick = ()=>{
   if(confirm('清空全部学习进度？此操作不可撤销。')){
     DB = JSON.parse(JSON.stringify(DEF));
     save(); $('mask').hidden=true; renderHome();
+    toast('进度已清空');
   }
 };
 
