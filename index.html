@@ -95,6 +95,9 @@ body::before{
 .btn-ghost:hover{background:var(--well2)}
 .btn-ghost:disabled{color:var(--fg3);cursor:default}
 .btn .n{font-weight:500;opacity:.75;font-size:14px}
+.cta-row{display:flex;gap:9px}
+.cta-row .btn{flex:1;height:46px;font-size:14px}
+.cta-row .btn .n{font-size:13.5px;margin-left:2px}
 
 .sec{display:flex;align-items:baseline;justify-content:space-between;margin:0 2px 9px}
 .sec h2{margin:0;font-size:13px;font-weight:650;color:var(--fg2);letter-spacing:.02em}
@@ -112,6 +115,7 @@ body::before{
 
 .foot-tip{margin-top:auto;padding:14px 2px 2px;font-size:11px;color:var(--fg3);display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
 @media (pointer:coarse){ .foot-tip{display:none} }
+html.touch .foot-tip{display:none}
 .kbd{display:inline-block;min-width:17px;padding:1px 5px;border-radius:5px;background:var(--well);color:var(--fg2);font-size:10px;font-weight:600;text-align:center;margin-right:3px}
 
 /* ===== 学习页 ===== */
@@ -127,7 +131,8 @@ body::before{
 .card{flex:1;min-height:0;margin:16px 0 14px;border-radius:22px;background:var(--card);border:.5px solid var(--stroke);box-shadow:var(--shadow),inset 0 .5px 0 var(--inset);backdrop-filter:blur(24px);padding:26px 24px;display:flex;cursor:pointer;position:relative;overflow:hidden}
 .face{width:100%;display:flex;flex-direction:column;animation:fadeUp .18s ease both;min-height:0}
 .face.front{align-items:center;justify-content:center;text-align:center;gap:0}
-.face.back{overflow-y:auto;padding-right:2px;padding-top:16px}
+.face.back{overflow-y:auto;padding:0}
+.back-inner{margin:auto 0;display:flex;flex-direction:column;width:100%;padding:16px 0}
 .face[hidden]{display:none!important}
 
 .chip{position:absolute;top:16px;right:18px;padding:3px 9px;border-radius:999px;font-size:11px;font-weight:600;letter-spacing:.02em}
@@ -146,6 +151,9 @@ body::before{
 .spk:hover{background:var(--well2)}
 .spk svg{width:14px;height:14px}
 .rule{height:.5px;background:var(--divider);margin:16px 0}
+.more-btn{margin-top:14px;align-self:flex-start;background:transparent;border:none;color:var(--accent);font-size:12.5px;font-weight:600;padding:4px 0;cursor:pointer;font-family:inherit;letter-spacing:.01em}
+.more-btn:hover{opacity:.72}
+.more-btn[hidden]{display:none!important}
 .zrow{display:flex;gap:11px;align-items:flex-start}
 .pos{font-size:12px;font-weight:600;color:var(--fg3);font-style:italic;padding-top:.42em;flex:none;min-width:30px}
 .z{font-size:clamp(1.32rem,4.7vw,1.62rem);font-weight:600;letter-spacing:-.01em;line-height:1.32;color:var(--fg)}
@@ -267,7 +275,10 @@ body::before{
     <div class="cta">
       <button class="btn btn-resume" id="btnResume" hidden></button>
       <button class="btn btn-primary" id="btnAll"></button>
-      <button class="btn btn-ghost" id="btnWeak"></button>
+      <div class="cta-row">
+        <button class="btn btn-ghost" id="btnWeak"></button>
+        <button class="btn btn-ghost" id="btnNew"></button>
+      </div>
     </div>
 
     <div class="sec">
@@ -306,6 +317,7 @@ body::before{
         <div class="tap-hint" id="tapHint">轻点卡片 · 看释义</div>
       </div>
       <div class="face back" id="faceBack" hidden>
+       <div class="back-inner">
         <span class="chap" id="bChap"></span>
         <button class="spk" id="btnSpk" aria-label="朗读">
           <svg viewBox="0 0 16 16" fill="none"><path d="M8.6 3.1v9.8L5.2 9.9H3a.9.9 0 0 1-.9-.9V7a.9.9 0 0 1 .9-.9h2.2L8.6 3.1z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M11.2 6a3.2 3.2 0 0 1 0 4M13 4.4a5.4 5.4 0 0 1 0 7.2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
@@ -317,12 +329,13 @@ body::before{
           <span class="pos" id="bPos"></span>
           <div class="z" id="bZh"></div>
         </div>
-        <div class="rule"></div>
-        <div class="e" id="bEn"></div>
+        <button class="more-btn" id="btnMore">展开英文释义和例句</button>
+        <div class="e" id="bEn" hidden></div>
         <div class="ex" hidden id="bEx">
           <div class="en" id="bExEn"></div>
           <div class="zh" id="bExZh"></div>
         </div>
+       </div>
       </div>
     </div>
 
@@ -449,15 +462,18 @@ function renderHome(){
   $('ringFg').style.strokeLinecap = mastered>0 ? 'round' : 'butt';
   $('ringNum').textContent = pct+'%';
 
-  if(mastered===0 && touched===0){
+  if(touched===0){
     $('heroBig').textContent = '还没开始';
     $('heroSm').innerHTML = `共 <b>${total}</b> 个词，分 <b>${chapters().length}</b> 篇课文<br>一轮约 12 分钟`;
   }else{
+    const unTouched = total - touched;
+    const wrongN = touched - mastered;
     $('heroBig').textContent = `已掌握 ${mastered} / ${total}`;
-    const left = total - mastered;
-    $('heroSm').innerHTML = left>0
-      ? `还有 <b>${left}</b> 个没拿下${DB.last?` · 上次 ${DB.last}`:''}`
-      : `全部拿下 🎉`;
+    if(mastered===total){
+      $('heroSm').innerHTML = `全部拿下 🎉`;
+    }else{
+      $('heroSm').innerHTML = `错词 <b>${wrongN}</b> · 还没背 <b>${unTouched}</b>${DB.last?`<br>上次 ${DB.last}`:''}`;
+    }
   }
 
   // 存储警告
@@ -477,18 +493,22 @@ function renderHome(){
   }
 
   const all = DATA.filter(d=>!(DB.settings.skipL4 && d.t==='四级'));
-  $('btnAll').innerHTML = `开始冲刺 <span class="n">· ${all.length} 词</span>`;
+  const hasResume = ss && ss.ids && ss.i < ss.ids.length;
+  $('btnAll').innerHTML = hasResume
+    ? `从头刷全部 <span class="n">· ${all.length} 词</span>`
+    : `开始冲刺 <span class="n">· ${all.length} 词</span>`;
   $('btnAll').disabled = all.length===0;
 
-  const weak = DATA.filter(d=>!isMastered(d.id) && !(DB.settings.skipL4 && d.t==='四级'));
-  const nothingYet = DATA.every(d=>!cardState(d.id));
-  if(nothingYet){
-    $('btnWeak').textContent = '先刷一轮，再来筛错词';
-    $('btnWeak').disabled = true;
-  }else{
-    $('btnWeak').innerHTML = weak.length ? `只刷没掌握的 <span class="n">· ${weak.length} 词</span>` : '全部已掌握';
-    $('btnWeak').disabled = weak.length===0;
-  }
+  // 「错词」= 碰过但没答对；「没背」= 一次都没看过。两者严格分开
+  const skip = d => DB.settings.skipL4 && d.t==='四级';
+  const wrongList = DATA.filter(d=>cardState(d.id) && !isMastered(d.id) && !skip(d));
+  const newList   = DATA.filter(d=>!cardState(d.id) && !skip(d));
+
+  $('btnWeak').innerHTML = wrongList.length ? `错词 <span class="n">${wrongList.length}</span>` : '没有错词';
+  $('btnWeak').disabled = wrongList.length===0;
+
+  $('btnNew').innerHTML = newList.length ? `还没背 <span class="n">${newList.length}</span>` : '都背过了';
+  $('btnNew').disabled = newList.length===0;
 
   // 关卡网格
   const g = $('grid'); g.innerHTML='';
@@ -567,7 +587,8 @@ function resumeSession(){
 }
 
 function startAll(){ startDeck(DATA, '全部'); }
-function startWeak(){ startDeck(DATA.filter(d=>!isMastered(d.id)), '没掌握的'); }
+function startWeak(){ startDeck(DATA.filter(d=>cardState(d.id) && !isMastered(d.id)), '错词'); }
+function startNew(){ startDeck(DATA.filter(d=>!cardState(d.id)), '没背过的'); }
 function startChapter(ch){ startDeck(DATA.filter(d=>d.c===ch), ch); }
 
 /* ---------- 学习页 ---------- */
@@ -594,8 +615,11 @@ function renderCard(){
   $('bPos').textContent = d.o || '';
   $('bZh').textContent = d.z;
   $('bEn').textContent = d.e;
-  if(d.x){ $('bEx').hidden=false; $('bExEn').textContent=d.x; $('bExZh').textContent=d.y||''; }
-  else $('bEx').hidden=true;
+  $('bExEn').textContent = d.x || '';
+  $('bExZh').textContent = d.y || '';
+  $('btnMore').hidden = false;
+  $('bEn').hidden = true;      // 默认折叠：冲刺只认中文
+  $('bEx').hidden = true;
 
   setActions('ask');
   $('btnUndo').disabled = !S.history.length;
@@ -688,7 +712,11 @@ function judge(v){
     S.wrong++;
     S.wrongList.push(d);
     save();
-    flip(); // 强制看答案
+    // 直接展开答案（不能走 flip：用户可能已经自己翻开了，flip 会提前 return）
+    S.stage = 'back';
+    $('faceFront').hidden = true;
+    $('faceBack').hidden = false;
+    setActions('judged');
     $('btnUndo').disabled = false;
     updateBar();
     persistSession();
@@ -783,6 +811,7 @@ function speak(w){
 /* ---------- 交互绑定 ---------- */
 $('btnAll').onclick = startAll;
 $('btnWeak').onclick = startWeak;
+$('btnNew').onclick = startNew;
 $('btnResume').onclick = resumeSession;
 
 function leaveStudy(){
@@ -802,6 +831,12 @@ $('btnSpkFront').onclick = e=>{ e.stopPropagation(); const d=S.deck[S.i]; if(d) 
 $('btnNo').onclick = e=>{ e.stopPropagation(); judge('wrong'); };
 $('btnYes').onclick = e=>{ e.stopPropagation(); judge('right'); };
 $('btnUndo').onclick = e=>{ e.stopPropagation(); undo(); };
+$('btnMore').onclick = e=>{
+  e.stopPropagation();
+  $('btnMore').hidden = true;
+  $('bEn').hidden = false;
+  $('bEx').hidden = false;
+};
 
 document.addEventListener('keydown', e=>{
   if(S.view!=='study') return;
@@ -836,6 +871,11 @@ $('btnReset').onclick = ()=>{
     toast('进度已清空');
   }
 };
+
+/* 触屏设备不需要键盘提示 */
+if(matchMedia('(pointer:coarse)').matches || ('ontouchstart' in window && innerWidth < 900)){
+  document.documentElement.classList.add('touch');
+}
 
 /* 启动 */
 renderHome();
